@@ -1,0 +1,91 @@
+<!-- PACK EDIÇÃO IA · 07 zoom no print
+     Base: componentes "ui-focus-zoom" e "yt-feather-highlight" do catálogo HyperFrames (Apache-2.0).
+     Passe "imagem" com o caminho do seu print (ex.: ../assets/img/meu-print.png).
+     Sem imagem, ele usa um painel de exemplo genérico. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"imagem","type":"string","label":"Caminho do print (vazio = painel de exemplo)","default":""},
+  {"id":"foco_x","type":"number","label":"Ponto de foco X (0 a 1)","default":0.84},
+  {"id":"foco_y","type":"number","label":"Ponto de foco Y (0 a 1)","default":0.47},
+  {"id":"zoom","type":"number","label":"Quanto aproxima","default":2.3},
+  {"id":"destaque_largura","type":"number","label":"Largura da moldura de destaque (px, 0 = sem moldura)","default":640},
+  {"id":"destaque_altura","type":"number","label":"Altura da moldura de destaque (px)","default":180}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #111318; font-family: var(--pk-fonte); }
+      #cena { position: absolute; inset: 0; transform-origin: 0 0; }
+      #print { position: absolute; inset: 60px; border-radius: 20px; overflow: hidden; box-shadow: 0 40px 90px rgba(0,0,0,.5); background: #fff; }
+      #print img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      /* painel de exemplo (genérico, sem marca) */
+      #painel { position: absolute; inset: 0; background: #f6f7f9; color: #1c1e21; display: grid; grid-template-rows: 90px 1fr; }
+      #painel .barra { background: #fff; border-bottom: 2px solid #e4e6eb; display: flex; align-items: center; gap: 28px; padding: 0 44px; font-weight: 700; font-size: 30px; }
+      #painel .barra .pill { font-size: 22px; font-weight: 600; padding: 8px 18px; border-radius: 999px; background: #eef1f5; color: #4b4f56; }
+      #painel table { margin: 40px 44px; border-collapse: collapse; width: calc(100% - 88px); background: #fff; border-radius: 14px; overflow: hidden; font-size: 28px; }
+      #painel th { text-align: left; font-size: 22px; color: #65676b; font-weight: 600; padding: 22px 26px; border-bottom: 2px solid #e4e6eb; }
+      #painel td { padding: 26px; border-bottom: 1px solid #eef0f3; font-variant-numeric: tabular-nums; }
+      #painel td.ok { color: #0f8f45; font-weight: 800; }
+      #painel td.ruim { color: #d12e2e; font-weight: 700; }
+      #painel .on { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: #22c55e; margin-right: 12px; }
+      #painel .off { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: #c0c4ca; margin-right: 12px; }
+      /* spotlight: uma moldura no centro e o resto escurecido */
+      #vinheta { position: absolute; left: 50%; top: 50%; width: var(--lw, 640px); height: var(--lh, 180px); margin: calc(var(--lh, 180px) / -2) 0 0 calc(var(--lw, 640px) / -2);
+        border-radius: 24px; box-shadow: 0 0 0 4000px rgba(5,6,10,.62), inset 0 0 0 6px var(--pk-acento); pointer-events: none; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="07-zoom-no-print" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="cena">
+        <div id="print">
+          <div id="painel">
+            <div class="barra">Painel de campanhas <span class="pill">Últimos 7 dias</span><span class="pill">Ativas</span></div>
+            <table>
+              <tr><th>Campanha</th><th>Investido</th><th>Vendas</th><th>CPA</th><th>Faturado</th><th>ROI</th></tr>
+              <tr><td><span class="on"></span>CBO · Criativo 07</td><td>R$ 1.240</td><td>58</td><td>R$ 21,38</td><td>R$ 2.726</td><td class="ok">2,2x</td></tr>
+              <tr><td><span class="on"></span>CBO · Criativo 12</td><td>R$ 2.010</td><td>137</td><td>R$ 14,67</td><td>R$ 6.439</td><td class="ok">3,2x</td></tr>
+              <tr><td><span class="off"></span>ABO · Teste gancho B</td><td>R$ 380</td><td>4</td><td>R$ 95,00</td><td>R$ 188</td><td class="ruim">0,5x</td></tr>
+              <tr><td><span class="on"></span>CBO · Criativo 03</td><td>R$ 860</td><td>31</td><td>R$ 27,74</td><td>R$ 1.457</td><td class="ok">1,7x</td></tr>
+              <tr><td><span class="off"></span>ABO · Teste gancho D</td><td>R$ 290</td><td>2</td><td>R$ 145,00</td><td>R$ 94</td><td class="ruim">0,3x</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="vinheta"></div>
+      <audio id="som07-1" data-start="0.9" data-duration="0.6" src="../assets/sfx/zoom-in.wav" data-volume="0.55"></audio>
+      <audio id="som07-2" data-start="1.6" data-duration="0.12" src="../assets/sfx/pop.wav" data-volume="0.4"></audio>
+      <audio id="som07-3" data-start="3.9" data-duration="0.6" src="../assets/sfx/zoom-out.wav" data-volume="0.4"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      if (v.imagem) {
+        document.querySelector("#print").innerHTML = `<img src="${v.imagem}" alt="" />`;
+      }
+      const FX = Number(v.foco_x ?? 0.84), FY = Number(v.foco_y ?? 0.47), Z = Number(v.zoom ?? 2.3);
+      const W = 1920, H = 1080;
+      const px = 60 + FX * (W - 120), py = 60 + FY * (H - 120);
+      // posição final da cena pra o ponto de foco ficar no centro da tela
+      const alvoX = W / 2 - px * Z, alvoY = H / 2 - py * Z;
+      const vin = document.querySelector("#vinheta");
+      const LW = Number(v.destaque_largura ?? 640), LH = Number(v.destaque_altura ?? 180);
+      vin.style.setProperty("--lw", LW + "px");
+      vin.style.setProperty("--lh", LH + "px");
+      if (!LW) vin.style.display = "none";
+
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#print", { y: 40, opacity: 0, scale: 0.97, duration: 0.6, ease: "power3.out" }, 0);
+      tl.to("#cena", { x: alvoX, y: alvoY, scale: Z, duration: 1.0, ease: "power3.inOut" }, 0.9);
+      tl.fromTo(vin, { opacity: 0, scale: 1.15 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 1.55);
+      tl.to("#cena", { scale: Z * 1.03, x: W / 2 - px * Z * 1.03, y: H / 2 - py * Z * 1.03, duration: 2.0, ease: "none" }, 1.9);
+      tl.to(vin, { opacity: 0, duration: 0.3 }, 3.85);
+      tl.to("#cena", { x: 0, y: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, 3.9);
+      window.__timelines["07-zoom-no-print"] = tl;
+    </script>
+  </body>
+</html>

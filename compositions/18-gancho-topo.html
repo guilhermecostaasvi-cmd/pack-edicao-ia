@@ -1,0 +1,62 @@
+<!-- PACK EDIÇÃO IA · 18 caixa de gancho no topo do criativo (vertical 9:16, overlay transparente)
+     Base: componentes "headline-slam", "spring-pop" e "outline-draw" do catálogo HyperFrames (Apache-2.0).
+     Os 3 primeiros segundos do criativo: a frase do gancho fica fixa no topo enquanto você fala. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"texto","type":"string","label":"Frase do gancho","default":"Ninguém te conta isso sobre tráfego"},
+  {"id":"destaque","type":"string","label":"Palavra destacada","default":"ninguém"},
+  {"id":"duracao_tela","type":"number","label":"Quanto tempo fica na tela (s)","default":3.5}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: var(--pk-fonte); }
+      /* zona segura: fica abaixo da barra do app (topo ~220px) */
+      #caixa { position: absolute; left: 70px; right: 70px; top: 260px; padding: 34px 40px 40px; border-radius: 30px; background: #ffffff; color: #0b0b0f; text-align: center;
+        box-shadow: 0 30px 60px rgba(0,0,0,.35); }
+      #caixa::after { content: ""; position: absolute; left: 50%; bottom: -22px; width: 44px; height: 44px; background: #fff; transform: translateX(-50%) rotate(45deg); border-radius: 6px; }
+      #txt { font-size: 74px; font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; }
+      #txt .d { color: #0b0b0f; background: var(--pk-acento); padding: 0 .14em; border-radius: .14em; display: inline-block; }
+      #txt .p { display: inline-block; }
+      #borda { position: absolute; inset: -8px; border-radius: 36px; border: 6px solid var(--pk-acento); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="18-gancho-topo" data-start="0" data-duration="4" data-width="1080" data-height="1920">
+      <div id="caixa"><div id="borda"></div><div id="txt"></div></div>
+      <audio id="som18-1" data-start="0" data-duration="0.12" src="../assets/sfx/pop.wav" data-volume="0.7"></audio>
+      <audio id="som18-2" data-start="0.05" data-duration="1.5" src="../assets/sfx/slam-texto.wav" data-volume="0.45"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const TXT = v.texto ?? "Ninguém te conta isso sobre tráfego";
+      const DEST = String(v.destaque ?? "ninguém").toLowerCase();
+      const FIM = Math.max(1.2, Math.min(3.9, Number(v.duracao_tela ?? 3.5)));
+      const box = document.querySelector("#txt");
+      const els = TXT.split(/\s+/).map((p) => {
+        const s = document.createElement("span");
+        s.className = "p" + (DEST && p.toLowerCase().replace(/[^\p{L}\d]/gu, "") === DEST.replace(/[^\p{L}\d]/gu, "") ? " d" : "");
+        s.textContent = p; box.appendChild(s); box.appendChild(document.createTextNode(" "));
+        return s;
+      });
+      // frase muito longa: reduz a fonte
+      if (TXT.length > 44) box.style.fontSize = Math.max(48, Math.floor(74 * 44 / TXT.length)) + "px";
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#caixa", { scale: 0.3, opacity: 0, y: -60 }, { scale: 1, opacity: 1, y: 0, duration: 0.42, ease: "back.out(2)", transformOrigin: "50% 0%" }, 0);
+      tl.from(els, { y: 26, opacity: 0, duration: 0.25, stagger: 0.045, ease: "back.out(2)" }, 0.12);
+      tl.fromTo(".d", { scale: 1 }, { scale: 1.12, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out" }, 0.55);
+      // borda piscando de leve pra puxar o olho
+      tl.fromTo("#borda", { opacity: 0 }, { opacity: 1, duration: 0.15, yoyo: true, repeat: 3, ease: "none" }, 0.7);
+      tl.to("#caixa", { scale: 1.02, duration: 1.2, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 50%" }, 1.2);
+      tl.to("#caixa", { y: -80, opacity: 0, scale: 0.9, duration: 0.3, ease: "power3.in" }, FIM - 0.3);
+      window.__timelines["18-gancho-topo"] = tl;
+    </script>
+  </body>
+</html>

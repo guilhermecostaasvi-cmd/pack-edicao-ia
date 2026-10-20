@@ -1,0 +1,88 @@
+<!-- PACK EDIÇÃO IA · 09 inscreva-se + sininho (overlay, fundo transparente)
+     Base: bloco "yt-lower-third" e componente "press-ripple" do catálogo HyperFrames (Apache-2.0).
+     Visual genérico (sem logo de plataforma). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"canal","type":"string","label":"Nome do canal","default":"Seu Canal"},
+  {"id":"inscritos","type":"string","label":"Linha de baixo","default":"conteúdo novo toda semana"},
+  {"id":"foto","type":"string","label":"Caminho da foto (vazio = inicial do nome)","default":""}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      #card { position: absolute; left: 50%; bottom: 110px; display: flex; align-items: center; gap: 26px; padding: 20px 26px 20px 20px;
+        border-radius: 999px; background: rgba(15,15,20,.92); box-shadow: 0 24px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08); color: #fff; white-space: nowrap; }
+      #foto { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(140deg, #ffd23f, #ff7a1a); display: grid; place-items: center; font-weight: 900; font-size: 44px; color: #0b0b0f; overflow: hidden; }
+      #foto img { width: 100%; height: 100%; object-fit: cover; }
+      #txt .c { font-size: 40px; font-weight: 800; }
+      #txt .s { font-size: 24px; color: #a1a1aa; font-weight: 500; }
+      #botao { margin-left: 18px; padding: 20px 38px; border-radius: 999px; background: #ef4444; font-weight: 800; font-size: 32px; letter-spacing: .01em; position: relative; }
+      #botao .ok { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; }
+      #sino { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,.1); display: grid; place-items: center; }
+      #sino svg { width: 42px; height: 42px; }
+      #cursor { position: absolute; width: 54px; height: 54px; z-index: 9; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+      .onda { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 4px solid #fff; opacity: 0; z-index: 8; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="09-inscreva-se" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="card">
+        <div id="foto">S</div>
+        <div id="txt"><div class="c" id="canal">Seu Canal</div><div class="s" id="sub">conteúdo novo toda semana</div></div>
+        <div id="botao"><span class="a">Inscrever-se</span><span class="ok">Inscrito ✓</span></div>
+        <div id="sino"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg></div>
+      </div>
+      <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 11.2-6.6.9 3.9 7.4-3 1.5-3.8-7.5L4 19.4z" fill="#fff" stroke="#111" stroke-width="1.2"/></svg>
+      <div class="onda" id="o1"></div><div class="onda" id="o2"></div>
+      <audio id="som09-1" data-start="0" data-duration="0.55" src="../assets/sfx/whoosh-curto.wav" data-volume="0.4"></audio>
+      <audio id="som09-2" data-start="1.35" data-duration="0.04" src="../assets/sfx/clique-mouse.wav" data-volume="0.9"></audio>
+      <audio id="som09-3" data-start="1.38" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.55"></audio>
+      <audio id="som09-4" data-start="2.35" data-duration="0.04" src="../assets/sfx/clique-mouse.wav" data-volume="0.9"></audio>
+      <audio id="som09-5" data-start="2.4" data-duration="0.6" src="../assets/sfx/moeda.wav" data-volume="0.45"></audio>
+      <audio id="som09-6" data-start="4.4" data-duration="0.45" src="../assets/sfx/whoosh-saida.wav" data-volume="0.35"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      const canal = v.canal ?? "Seu Canal";
+      $("#canal").textContent = canal;
+      $("#sub").textContent = v.inscritos ?? "conteúdo novo toda semana";
+      if (v.foto) $("#foto").innerHTML = `<img src="${v.foto}" alt="" />`; else $("#foto").textContent = canal.trim().charAt(0).toUpperCase();
+
+      gsap.set("#card", { xPercent: -50 });
+      // posições medidas depois do layout
+      const r = $("#root").getBoundingClientRect();
+      const bb = $("#botao").getBoundingClientRect(), sb = $("#sino").getBoundingClientRect();
+      const bx = bb.left - r.left + bb.width * 0.55, by = bb.top - r.top + bb.height * 0.6;
+      const sx = sb.left - r.left + sb.width * 0.55, sy = sb.top - r.top + sb.height * 0.6;
+      gsap.set("#cursor", { x: 1500, y: 1150 });
+      gsap.set("#o1", { left: bx, top: by }); gsap.set("#o2", { left: sx, top: sy });
+
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#card", { y: 160, opacity: 0, duration: 0.55, ease: "back.out(1.5)" }, 0);
+      tl.to("#cursor", { x: bx, y: by, duration: 0.7, ease: "power3.inOut" }, 0.6);
+      tl.to("#cursor", { scale: 0.82, duration: 0.07, yoyo: true, repeat: 1 }, 1.33);
+      tl.to("#botao", { scale: 0.93, duration: 0.07, yoyo: true, repeat: 1 }, 1.33);
+      tl.fromTo("#o1", { scale: 0.4, opacity: 0.9 }, { scale: 3.2, opacity: 0, duration: 0.5, ease: "power2.out" }, 1.36);
+      tl.to("#botao", { backgroundColor: "#3f3f46", duration: 0.2 }, 1.38);
+      tl.to("#botao .a", { opacity: 0, duration: 0.12 }, 1.38);
+      tl.to("#botao .ok", { opacity: 1, duration: 0.18 }, 1.45);
+      tl.to("#cursor", { x: sx, y: sy, duration: 0.55, ease: "power3.inOut" }, 1.75);
+      tl.to("#cursor", { scale: 0.82, duration: 0.07, yoyo: true, repeat: 1 }, 2.33);
+      tl.fromTo("#o2", { scale: 0.4, opacity: 0.9 }, { scale: 3.2, opacity: 0, duration: 0.5, ease: "power2.out" }, 2.36);
+      tl.to("#sino", { backgroundColor: "#ffd23f", duration: 0.15 }, 2.38);
+      tl.to("#sino svg path", { fill: "#0b0b0f", duration: 0.15 }, 2.38);
+      tl.fromTo("#sino svg", { rotation: 0 }, { keyframes: [{ rotation: 22 }, { rotation: -18 }, { rotation: 12 }, { rotation: -6 }, { rotation: 0 }], duration: 0.7, ease: "power1.inOut" }, 2.4);
+      tl.to("#cursor", { x: 1700, y: 1200, duration: 0.6, ease: "power2.in" }, 3.3);
+      tl.to("#card", { y: 160, opacity: 0, duration: 0.45, ease: "power3.in" }, 4.4);
+      window.__timelines["09-inscreva-se"] = tl;
+    </script>
+  </body>
+</html>

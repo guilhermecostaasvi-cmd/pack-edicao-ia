@@ -1,0 +1,41 @@
+/* ============================================================
+   IDENTIDADE DO PACK — troque só este arquivo pra deixar
+   todas as animações com a sua cara (cor, fonte, cantos).
+   ============================================================ */
+
+@font-face { font-family: "Poppins"; font-weight: 400; src: url("fonts/poppins-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Poppins"; font-weight: 600; src: url("fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-weight: 700; src: url("fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-weight: 800; src: url("fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-weight: 900; src: url("fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+@font-face { font-family: "Poppins"; font-weight: 400; src: url("fonts/poppins-latin-ext-400-normal.woff2") format("woff2"); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Poppins"; font-weight: 700; src: url("fonts/poppins-latin-ext-700-normal.woff2") format("woff2"); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Poppins"; font-weight: 800; src: url("fonts/poppins-latin-ext-800-normal.woff2") format("woff2"); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Poppins"; font-weight: 900; src: url("fonts/poppins-latin-ext-900-normal.woff2") format("woff2"); unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 700; src: url("fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Caveat"; font-weight: 700; src: url("fonts/Caveat-700-latin.woff2") format("woff2"); }
+
+:root {
+  /* Cores com função fixa (nunca decorativas) */
+  --pk-verde: #22c55e;        /* resultado, venda, número bom   */
+  --pk-verde-escuro: #0f5132;
+  --pk-laranja: #ff7a1a;      /* alerta, erro que custa dinheiro */
+  --pk-amarelo: #ffd23f;      /* a sacada, o destaque            */
+  --pk-azul: #3b82f6;         /* conceito, o jeito certo         */
+  --pk-vermelho: #ef4444;     /* prejuízo, "antes"               */
+
+  --pk-acento: var(--pk-amarelo);   /* cor de destaque principal do canal */
+  --pk-fundo: #0b0b0f;              /* fundo escuro padrão               */
+  --pk-papel: #ffffff;
+  --pk-texto: #f5f5f4;
+  --pk-texto-escuro: #0b0b0f;
+  --pk-cinza: #9ca3af;
+
+  --pk-fonte: "Poppins", system-ui, sans-serif;
+  --pk-mono: "JetBrains Mono", ui-monospace, monospace;
+  --pk-mao: "Caveat", "Poppins", cursive;
+
+  --pk-raio: 18px;
+  --pk-sombra: 0 18px 50px rgba(0, 0, 0, 0.35);
+}

@@ -1,0 +1,124 @@
+<!-- PACK EDIÇÃO IA · 05 gráfico de crescimento
+     Base: bloco "mk-line-graph" do catálogo HyperFrames (Apache-2.0), adaptado pra faturamento por dia/semana. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"titulo","type":"string","label":"Título","default":"Faturamento por semana"},
+  {"id":"valores","type":"string","label":"Valores separados por vírgula","default":"1200,1800,1500,3200,4100,6900,9800"},
+  {"id":"rotulos","type":"string","label":"Rótulos do eixo, separados por vírgula","default":"S1,S2,S3,S4,S5,S6,S7"},
+  {"id":"prefixo","type":"string","label":"Moeda","default":"R$"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); color: var(--pk-texto); background: #0b0b0f; }
+      #titulo { position: absolute; top: 90px; left: 160px; font-size: 64px; font-weight: 800; letter-spacing: -0.02em; }
+      #sub { position: absolute; top: 175px; left: 162px; font-family: var(--pk-mono); font-size: 28px; color: var(--pk-cinza); letter-spacing: .08em; }
+      svg { position: absolute; left: 0; top: 0; }
+      .grade { stroke: rgba(255,255,255,.08); stroke-width: 2; }
+      .eixo { fill: var(--pk-cinza); font-family: var(--pk-mono); font-size: 26px; }
+      #linha { fill: none; stroke: #3ddc84; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 8px 24px rgba(61,220,132,.35)); }
+      #area { fill: url(#grad); opacity: .0; }
+      .ponto { fill: #0b0b0f; stroke: #3ddc84; stroke-width: 6; }
+      .rotv { fill: #f5f5f4; font-weight: 700; font-size: 30px; text-anchor: middle; }
+      #ultimo { fill: #3ddc84; font-size: 44px; font-weight: 900; }
+      #selo { position: absolute; padding: 14px 26px; border-radius: 999px; background: #3ddc84; color: #06381c; font-weight: 900; font-size: 34px; opacity: 0; white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="05-grafico-crescimento" data-start="0" data-duration="6" data-width="1920" data-height="1080">
+      <div id="titulo">Faturamento por semana</div>
+      <div id="sub">CRESCIMENTO</div>
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080">
+        <defs><linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3ddc84" stop-opacity=".35"/><stop offset="1" stop-color="#3ddc84" stop-opacity="0"/></linearGradient></defs>
+        <g id="gradeG"></g>
+        <path id="area" d=""></path>
+        <path id="linha" d="M 0 0"></path>
+        <g id="pontos"></g>
+        <g id="eixoX"></g>
+      </svg>
+      <div id="selo">+0%</div>
+      <audio id="som05-1" data-start="0" data-duration="0.55" src="../assets/sfx/whoosh-curto.wav" data-volume="0.45"></audio>
+      <audio id="som05-2" data-start="0.6" data-duration="2.0" src="../assets/sfx/riser-2s.wav" data-volume="0.25"></audio>
+      <audio id="som05-3" data-start="3.45" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.7"></audio>
+      <audio id="som05-4" data-start="3.5" data-duration="0.18" src="../assets/sfx/pop-bolha.wav" data-volume="0.6"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const NS = "http://www.w3.org/2000/svg";
+      const vals = String(v.valores ?? "1200,1800,1500,3200,4100,6900,9800").split(",").map((s) => Number(s.trim())).filter((n) => !isNaN(n));
+      const rots = String(v.rotulos ?? "S1,S2,S3,S4,S5,S6,S7").split(",").map((s) => s.trim());
+      const PRE = v.prefixo ?? "R$";
+      document.querySelector("#titulo").textContent = v.titulo ?? "Faturamento por semana";
+
+      const X0 = 200, X1 = 1720, Y0 = 900, Y1 = 330;
+      const max = Math.max(...vals) * 1.08;
+      const px = (i) => X0 + (X1 - X0) * (vals.length === 1 ? 0.5 : i / (vals.length - 1));
+      const py = (val) => Y0 - (Y0 - Y1) * (val / max);
+      const curto = (n) => n >= 1000 ? (n / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + " mil" : String(n);
+
+      const g = document.querySelector("#gradeG");
+      for (let k = 0; k <= 4; k++) {
+        const y = Y0 - (Y0 - Y1) * (k / 4);
+        const l = document.createElementNS(NS, "line");
+        l.setAttribute("x1", X0 - 30); l.setAttribute("x2", X1 + 30); l.setAttribute("y1", y); l.setAttribute("y2", y); l.setAttribute("class", "grade");
+        g.appendChild(l);
+      }
+      let d = "";
+      vals.forEach((val, i) => (d += (i ? " L " : "M ") + px(i).toFixed(1) + " " + py(val).toFixed(1)));
+      document.querySelector("#linha").setAttribute("d", d);
+      document.querySelector("#area").setAttribute("d", d + ` L ${px(vals.length - 1)} ${Y0} L ${px(0)} ${Y0} Z`);
+
+      const pg = document.querySelector("#pontos"), ex = document.querySelector("#eixoX");
+      const pontos = [], rotulosV = [];
+      vals.forEach((val, i) => {
+        const c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", px(i)); c.setAttribute("cy", py(val)); c.setAttribute("r", 13); c.setAttribute("class", "ponto");
+        pg.appendChild(c); pontos.push(c);
+        const t = document.createElementNS(NS, "text");
+        t.setAttribute("x", px(i)); t.setAttribute("y", py(val) - 34); t.setAttribute("class", "rotv");
+        t.textContent = curto(val);
+        if (i === vals.length - 1) { t.setAttribute("id", "ultimo"); t.textContent = PRE + " " + curto(val); t.setAttribute("x", px(i) - 34); t.setAttribute("y", py(val) + 14); t.style.textAnchor = "end"; }
+        pg.appendChild(t); rotulosV.push(t);
+        const e = document.createElementNS(NS, "text");
+        e.setAttribute("x", px(i)); e.setAttribute("y", Y0 + 60); e.setAttribute("class", "eixo"); e.setAttribute("text-anchor", "middle");
+        e.textContent = rots[i] ?? ""; ex.appendChild(e);
+      });
+
+      const crescimento = vals[0] > 0 ? Math.round((vals[vals.length - 1] / vals[0] - 1) * 100) : 0;
+      const selo = document.querySelector("#selo");
+      selo.textContent = (crescimento >= 0 ? "+" : "") + crescimento.toLocaleString("pt-BR") + "%";
+      selo.style.left = Math.min(1600, px(vals.length - 1) - 90) + "px";
+      selo.style.top = Math.max(230, py(vals[vals.length - 1]) - 110) + "px";
+
+      const linha = document.querySelector("#linha");
+      const L = linha.getTotalLength();
+      gsap.set(linha, { strokeDasharray: L, strokeDashoffset: L, opacity: 0 });
+      gsap.set(pontos, { attr: { r: 0 }, opacity: 0 });
+      gsap.set(rotulosV, { opacity: 0, y: 12 });
+
+      const tl = gsap.timeline({ paused: true });
+      tl.from(["#titulo", "#sub"], { y: 24, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" }, 0);
+      tl.from("#gradeG line", { scaleX: 0, transformOrigin: "0% 50%", duration: 0.6, stagger: 0.05, ease: "power2.out" }, 0.1);
+      tl.from("#eixoX text", { opacity: 0, y: 10, duration: 0.3, stagger: 0.05 }, 0.3);
+      const DESENHO = 2.6;
+      tl.set(linha, { opacity: 1 }, 0.72);
+      tl.to(linha, { strokeDashoffset: 0, duration: DESENHO, ease: "power1.inOut" }, 0.7);
+      tl.to("#area", { opacity: 1, duration: 0.8, ease: "power1.out" }, 3.2);
+      pontos.forEach((p, i) => {
+        const tt = 0.7 + DESENHO * (vals.length === 1 ? 1 : i / (vals.length - 1));
+        tl.to(p, { attr: { r: 13 }, opacity: 1, duration: 0.3, ease: "back.out(3)" }, tt);
+        tl.to(rotulosV[i], { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, tt + 0.05);
+      });
+      tl.to(pontos[pontos.length - 1], { attr: { r: 18 }, fill: "#3ddc84", duration: 0.3 }, 3.35);
+      tl.fromTo(selo, { opacity: 0, scale: 0.4, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2.2)" }, 3.5);
+      tl.to("#root > *", { opacity: 0, duration: 0.35, ease: "power2.in" }, 5.6);
+      window.__timelines["05-grafico-crescimento"] = tl;
+    </script>
+  </body>
+</html>

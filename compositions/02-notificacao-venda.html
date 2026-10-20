@@ -1,0 +1,71 @@
+<!-- PACK EDIÇÃO IA · 02 notificação de venda (overlay, fundo transparente)
+     Base: componente "native-notification-pop" do catálogo HyperFrames (Apache-2.0), redesenhado genérico (sem marca de app real). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"titulo","type":"string","label":"Título","default":"Venda aprovada!"},
+  {"id":"valor","type":"string","label":"Valor","default":"R$ 97,00"},
+  {"id":"detalhe","type":"string","label":"Linha de baixo","default":"Pix · Produto principal"},
+  {"id":"app","type":"string","label":"Nome do app","default":"CHECKOUT"},
+  {"id":"lado","type":"string","label":"Lado (direita/esquerda/centro)","default":"direita"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      #card { position: absolute; top: 64px; right: 64px; width: 640px; padding: 26px 30px; border-radius: 30px;
+        background: rgba(250, 250, 250, 0.92); backdrop-filter: blur(24px); box-shadow: 0 30px 70px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.6);
+        display: grid; grid-template-columns: 76px 1fr; gap: 6px 22px; align-items: center; color: #111; }
+      #card.esquerda { right: auto; left: 64px; }
+      #card.centro { right: auto; left: 640px; }
+      #icone { grid-row: span 3; width: 76px; height: 76px; border-radius: 20px; background: linear-gradient(145deg, #34d27b, #12924a);
+        display: grid; place-items: center; box-shadow: inset 0 -6px 12px rgba(0,0,0,.15); }
+      #icone svg { width: 40px; height: 40px; }
+      #topo { display: flex; justify-content: space-between; font-size: 20px; font-weight: 600; color: #6b6b70; letter-spacing: .06em; }
+      #titulo { font-size: 32px; font-weight: 800; letter-spacing: -0.01em; }
+      #linha { display: flex; gap: 14px; align-items: baseline; }
+      #valor { font-size: 34px; font-weight: 900; color: #0f8f45; font-variant-numeric: tabular-nums; }
+      #detalhe { font-size: 22px; color: #55555a; font-weight: 500; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="02-notificacao-venda" data-start="0" data-duration="4" data-width="1920" data-height="1080">
+      <div id="card">
+        <div id="icone"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path id="checkpath" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <div id="topo"><span id="app">CHECKOUT</span><span>agora</span></div>
+        <div id="titulo">Venda aprovada!</div>
+        <div id="linha"><span id="valor">R$ 97,00</span><span id="detalhe">Pix · Produto principal</span></div>
+      </div>
+      <audio id="som02-1" data-start="0.05" data-duration="1.41" src="../assets/sfx/notificacao-venda.wav" data-volume="0.9"></audio>
+      <audio id="som02-2" data-start="3.35" data-duration="0.45" src="../assets/sfx/whoosh-saida.wav" data-volume="0.35"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      $("#titulo").textContent = v.titulo ?? "Venda aprovada!";
+      $("#valor").textContent = v.valor ?? "R$ 97,00";
+      $("#detalhe").textContent = v.detalhe ?? "Pix · Produto principal";
+      $("#app").textContent = v.app ?? "CHECKOUT";
+      const lado = v.lado ?? "direita";
+      if (lado !== "direita") $("#card").classList.add(lado);
+
+      const path = $("#checkpath");
+      const L = path.getTotalLength();
+      gsap.set(path, { strokeDasharray: L, strokeDashoffset: L, opacity: 0 });
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#card", { y: -220, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)" }, 0);
+      tl.from("#icone", { scale: 0.4, rotation: -25, duration: 0.45, ease: "back.out(2.4)" }, 0.12);
+      tl.to(path, { strokeDashoffset: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0.3);
+      tl.from(["#titulo", "#linha"], { y: 14, opacity: 0, duration: 0.35, stagger: 0.08, ease: "power2.out" }, 0.22);
+      tl.fromTo("#valor", { scale: 1 }, { scale: 1.12, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "0% 60%" }, 0.65);
+      tl.to("#card", { y: -220, opacity: 0, scale: 0.95, duration: 0.45, ease: "power3.in" }, 3.35);
+      window.__timelines["02-notificacao-venda"] = tl;
+    </script>
+  </body>
+</html>

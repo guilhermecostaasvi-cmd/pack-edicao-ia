@@ -1,0 +1,44 @@
+<!-- PACK EDIÇÃO IA · 15 transição flash branco (overlay, fundo transparente)
+     Base: blocos "flash-through-white" e "editorial-flash-overlay" do catálogo HyperFrames (Apache-2.0).
+     Coloque o MEIO desta transição (0,4s) exatamente em cima do corte. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"cor","type":"color","label":"Cor do flash","default":"#ffffff"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      #luz { position: absolute; inset: -20%; background: radial-gradient(ellipse at 50% 50%, var(--cor, #fff) 0%, var(--cor, #fff) 35%, rgba(255,255,255,0) 70%); opacity: 0; }
+      #cheio { position: absolute; inset: 0; background: var(--cor, #fff); opacity: 0; }
+      #faixa { position: absolute; top: -10%; bottom: -10%; width: 420px; left: 0; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.9), rgba(255,255,255,0)); transform: skewX(-18deg); opacity: .0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="15-transicao-flash" data-start="0" data-duration="0.9" data-width="1920" data-height="1080">
+      <div id="luz"></div>
+      <div id="cheio"></div>
+      <div id="faixa"></div>
+      <audio id="som15-1" data-start="0" data-duration="0.6" src="../assets/sfx/zoom-in.wav" data-volume="0.35"></audio>
+      <audio id="som15-2" data-start="0.36" data-duration="0.9" src="../assets/sfx/flash-brilho.wav" data-volume="0.55" data-fade-out="0.3"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      document.querySelector("#root").style.setProperty("--cor", v.cor ?? "#ffffff");
+      gsap.set("#faixa", { x: -500 });
+      const tl = gsap.timeline({ paused: true });
+      tl.to("#faixa", { opacity: 1, duration: 0.05 }, 0.05);
+      tl.to("#faixa", { x: 2100, duration: 0.45, ease: "power2.in" }, 0.05);
+      tl.fromTo("#luz", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.4, duration: 0.33, ease: "power3.in" }, 0.05);
+      tl.to("#cheio", { opacity: 1, duration: 0.06, ease: "none" }, 0.34);   // 0,40s = tela 100% coberta → o corte some aqui
+      tl.to("#cheio", { opacity: 0, duration: 0.45, ease: "power2.out" }, 0.45);
+      tl.to("#luz", { opacity: 0, duration: 0.45, ease: "power2.out" }, 0.45);
+      window.__timelines["15-transicao-flash"] = tl;
+    </script>
+  </body>
+</html>

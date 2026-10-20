@@ -1,0 +1,76 @@
+<!-- PACK EDIÇÃO IA · 14 checklist que vai marcando (método nomeado: "os 4 filtros", "o checklist de 4 coisas")
+     Base: blocos "mk-specs-list" e "marker-checklist-card" + componente "success-check" do catálogo HyperFrames (Apache-2.0). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"titulo","type":"string","label":"Título","default":"Os 4 filtros do radar"},
+  {"id":"itens","type":"string","label":"Itens separados por |","default":"Dias no ar|Anúncios ativos|Tipo de entregável|Ticket"},
+  {"id":"fundo","type":"color","label":"Cor de fundo","default":"#0b0b0f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); color: #fff; background: var(--fundo, #0b0b0f); }
+      #titulo { position: absolute; left: 220px; top: 150px; font-size: 92px; font-weight: 900; letter-spacing: -0.03em; }
+      #sublinha { position: absolute; left: 222px; top: 268px; width: 160px; height: 8px; border-radius: 4px; background: var(--pk-acento); transform-origin: 0 50%; }
+      #lista { position: absolute; left: 220px; right: 220px; top: 350px; display: grid; gap: 26px; }
+      .it { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 34px; padding: 22px 30px; border-radius: 22px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 2px rgba(255,255,255,.06); }
+      .cx { width: 76px; height: 76px; border-radius: 18px; box-shadow: inset 0 0 0 5px rgba(255,255,255,.25); display: grid; place-items: center; position: relative; }
+      .cx .fundo { position: absolute; inset: 0; border-radius: 18px; background: #22c55e; transform: scale(0); }
+      .cx svg { position: relative; width: 50px; height: 50px; }
+      .tx { font-size: 58px; font-weight: 700; letter-spacing: -0.01em; }
+      .tx .n { font-family: var(--pk-mono); font-size: 34px; color: var(--pk-cinza); margin-right: 22px; font-weight: 400; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="14-checklist" data-start="0" data-duration="5.5" data-width="1920" data-height="1080">
+      <div id="titulo">Os 4 filtros do radar</div>
+      <div id="sublinha"></div>
+      <div id="lista"></div>
+      <audio id="som14-1" data-start="0" data-duration="0.55" src="../assets/sfx/whoosh-curto.wav" data-volume="0.45"></audio>
+      <audio id="som14-2" data-start="1.30" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.6"></audio>
+      <audio id="som14-3" data-start="1.85" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.6"></audio>
+      <audio id="som14-4" data-start="2.40" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.6"></audio>
+      <audio id="som14-5" data-start="2.95" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.6"></audio>
+      <!-- o 5º "tique" é o som de conclusão: com 4 itens ele fecha a lista, com 5 ele marca o último -->
+      <audio id="som14-6" data-start="3.50" data-duration="1.81" src="../assets/sfx/sucesso.wav" data-volume="0.45"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      document.querySelector("#titulo").textContent = v.titulo ?? "Os 4 filtros do radar";
+      document.querySelector("#root").style.setProperty("--fundo", v.fundo ?? "#0b0b0f");
+      // até 5 itens (os sons de check estão marcados pra 5 posições)
+      const itens = String(v.itens ?? "Dias no ar|Anúncios ativos|Tipo de entregável|Ticket").split("|").map((s) => s.trim()).filter(Boolean).slice(0, 5);
+      const lista = document.querySelector("#lista");
+      if (itens.length === 5) { lista.style.top = "320px"; lista.style.gap = "18px"; }
+      const els = itens.map((txt, i) => {
+        const d = document.createElement("div");
+        d.className = "it";
+        d.innerHTML = `<div class="cx"><div class="fundo"></div><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div class="tx"><span class="n">0${i + 1}</span>${txt}</div>`;
+        lista.appendChild(d);
+        return d;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#titulo", { y: 30, opacity: 0, duration: 0.5, ease: "power3.out" }, 0);
+      tl.from("#sublinha", { scaleX: 0, duration: 0.5, ease: "power3.out" }, 0.2);
+      tl.from(els, { x: -60, opacity: 0, duration: 0.45, stagger: 0.1, ease: "power3.out" }, 0.35);
+      els.forEach((el, i) => {
+        const t = 1.3 + i * 0.55;
+        const p = el.querySelector("path"); const L = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 0 });
+        tl.to(el.querySelector(".fundo"), { scale: 1, duration: 0.25, ease: "back.out(2.5)" }, t);
+        tl.to(p, { strokeDashoffset: 0, opacity: 1, duration: 0.25, ease: "power2.out" }, t + 0.08);
+        tl.to(el, { backgroundColor: "rgba(34,197,94,.12)", boxShadow: "inset 0 0 0 2px rgba(34,197,94,.45)", duration: 0.25 }, t);
+        tl.fromTo(el, { scale: 1 }, { scale: 1.025, duration: 0.12, yoyo: true, repeat: 1 }, t);
+      });
+      tl.to("#root > *", { opacity: 0, duration: 0.35, ease: "power2.in" }, 5.1);
+      window.__timelines["14-checklist"] = tl;
+    </script>
+  </body>
+</html>

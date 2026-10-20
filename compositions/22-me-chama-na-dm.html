@@ -1,0 +1,77 @@
+<!-- PACK EDIÇÃO IA · 22 CTA "me chama na DM" (vertical 9:16, overlay transparente)
+     Base: blocos "instagram-follow" e "message-thread-reveal" do catálogo HyperFrames (Apache-2.0), redesenhado genérico (sem logo de rede social).
+     Pro fim do criativo ou do vídeo: a palavra que a pessoa tem que mandar aparece digitando numa bolha. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"arroba","type":"string","label":"Seu @","default":"@seuarroba"},
+  {"id":"palavra","type":"string","label":"Palavra pra mandar","default":"PACK"},
+  {"id":"chamada","type":"string","label":"Chamada","default":"Me chama na DM e manda"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: var(--pk-fonte); }
+      #card { position: absolute; left: 90px; right: 90px; bottom: 380px; padding: 46px 44px 50px; border-radius: 40px; background: rgba(250,250,250,.96); color: #0b0b0f; box-shadow: 0 40px 80px rgba(0,0,0,.4); }
+      #cab { display: flex; align-items: center; gap: 22px; }
+      #av { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(140deg, #ffd23f, #ff7a1a); display: grid; place-items: center; font-weight: 900; font-size: 44px; color: #0b0b0f; }
+      #arroba { font-size: 44px; font-weight: 800; }
+      #status { font-size: 26px; color: #22a35a; font-weight: 600; }
+      #cham { font-size: 50px; font-weight: 800; letter-spacing: -0.01em; margin: 34px 0 26px; line-height: 1.1; }
+      #bolha { display: inline-flex; align-items: center; gap: 6px; float: right; padding: 22px 34px; border-radius: 34px 34px 8px 34px; background: #3b82f6; color: #fff; font-size: 64px; font-weight: 900; letter-spacing: .04em; min-height: 112px; }
+      #cursor { width: 5px; height: 58px; background: #fff; border-radius: 2px; }
+      #enviar { clear: both; display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; font-size: 26px; color: #6b7280; font-weight: 600; }
+      #seta { position: absolute; right: 120px; bottom: 260px; font-size: 120px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="22-me-chama-na-dm" data-start="0" data-duration="5" data-width="1080" data-height="1920">
+      <div id="card">
+        <div id="cab"><div id="av">S</div><div><div id="arroba">@seuarroba</div><div id="status">● responde rápido</div></div></div>
+        <div id="cham">Me chama na DM e manda</div>
+        <div id="bolha"><span id="dig"></span><span id="cursor"></span></div>
+        <div id="enviar"><span id="lida">Enviado ✓✓</span></div>
+      </div>
+      <audio id="som22-1" data-start="0" data-duration="0.55" src="../assets/sfx/whoosh-curto.wav" data-volume="0.5"></audio>
+      <audio id="som22-2" data-start="1.0" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.8"></audio>
+      <audio id="som22-3" data-start="1.18" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.7"></audio>
+      <audio id="som22-4" data-start="1.36" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.8"></audio>
+      <audio id="som22-5" data-start="1.54" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.7"></audio>
+      <audio id="som22-6" data-start="1.72" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.8"></audio>
+      <audio id="som22-7" data-start="1.90" data-duration="0.06" src="../assets/sfx/tecla.wav" data-volume="0.7"></audio>
+      <audio id="som22-8" data-start="2.35" data-duration="0.25" src="../assets/sfx/swipe.wav" data-volume="0.6"></audio>
+      <audio id="som22-9" data-start="2.45" data-duration="0.69" src="../assets/sfx/check.wav" data-volume="0.5"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      const ARR = v.arroba ?? "@seuarroba";
+      $("#arroba").textContent = ARR;
+      $("#av").textContent = ARR.replace("@", "").charAt(0).toUpperCase() || "S";
+      $("#cham").textContent = v.chamada ?? "Me chama na DM e manda";
+      const PAL = String(v.palavra ?? "PACK");
+      const dig = $("#dig");
+      const est = { n: 0 };
+      const pinta = () => (dig.textContent = PAL.slice(0, Math.round(est.n)));
+      pinta();
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#card", { y: 260, opacity: 0, duration: 0.5, ease: "back.out(1.4)" }, 0);
+      tl.from("#cham", { y: 20, opacity: 0, duration: 0.35, ease: "power2.out" }, 0.35);
+      tl.from("#bolha", { scale: 0.5, opacity: 0, duration: 0.3, ease: "back.out(2.5)", transformOrigin: "100% 100%" }, 0.7);
+      // digita no ritmo dos sons de tecla (até 6 letras ficam sincronizadas)
+      tl.to(est, { n: PAL.length, duration: Math.min(1.08, 0.18 * PAL.length), ease: "none", onUpdate: pinta }, 0.95);
+      tl.to("#cursor", { opacity: 0, duration: 0.01, yoyo: true, repeat: 7, repeatDelay: 0.24 }, 0.6);
+      tl.set("#cursor", { opacity: 0 }, 2.35);
+      tl.to("#bolha", { y: -14, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }, 2.35);
+      tl.from("#enviar", { opacity: 0, x: 20, duration: 0.25 }, 2.45);
+      tl.to("#card", { scale: 1.02, duration: 0.8, yoyo: true, repeat: 1, ease: "sine.inOut" }, 3.0);
+      tl.to("#card", { y: 260, opacity: 0, duration: 0.35, ease: "power3.in" }, 4.6);
+      window.__timelines["22-me-chama-na-dm"] = tl;
+    </script>
+  </body>
+</html>

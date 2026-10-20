@@ -1,0 +1,59 @@
+<!-- PACK EDIÇÃO IA · 08 lower third com nome e @ (overlay, fundo transparente)
+     Base: blocos "lt-color-block" e "lt-bold-block" do catálogo HyperFrames (Apache-2.0). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"nome","type":"string","label":"Nome","default":"Seu Nome"},
+  {"id":"arroba","type":"string","label":"@ ou cargo","default":"@seuarroba"},
+  {"id":"etiqueta","type":"string","label":"Etiqueta pequena","default":"TRÁFEGO DIRETO"},
+  {"id":"cor","type":"color","label":"Cor de destaque","default":"#ffd23f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      #lt { position: absolute; left: 110px; bottom: 130px; }
+      #etq { display: inline-block; font-family: var(--pk-mono); font-weight: 700; font-size: 24px; letter-spacing: .16em; padding: 8px 16px; color: #0b0b0f; background: var(--cor); border-radius: 6px; margin-bottom: 14px; }
+      #bloco { position: relative; display: inline-block; padding: 18px 34px 20px 30px; background: #0b0b0f; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,.4); }
+      #barra { position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--cor); }
+      #nome { font-size: 72px; font-weight: 900; color: #fff; letter-spacing: -0.02em; line-height: 1.05; white-space: nowrap; }
+      #arroba { font-size: 34px; font-weight: 600; color: var(--cor); margin-top: 2px; white-space: nowrap; }
+      #varredura { position: absolute; inset: 0; background: var(--cor); transform-origin: 0 50%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="08-lower-third" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="lt">
+        <div><span id="etq">TRÁFEGO DIRETO</span></div>
+        <div id="bloco"><div id="barra"></div><div id="nome">Seu Nome</div><div id="arroba">@seuarroba</div><div id="varredura"></div></div>
+      </div>
+      <audio id="som08-1" data-start="0" data-duration="0.35" src="../assets/sfx/swoosh-agudo.wav" data-volume="0.5"></audio>
+      <audio id="som08-2" data-start="0.42" data-duration="0.08" src="../assets/sfx/toggle.wav" data-volume="0.45"></audio>
+      <audio id="som08-3" data-start="4.4" data-duration="0.45" src="../assets/sfx/whoosh-saida.wav" data-volume="0.35"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      $("#nome").textContent = v.nome ?? "Seu Nome";
+      $("#arroba").textContent = v.arroba ?? "@seuarroba";
+      $("#etq").textContent = v.etiqueta ?? "TRÁFEGO DIRETO";
+      $("#root").style.setProperty("--cor", v.cor ?? "#ffd23f");
+      if (!(v.etiqueta ?? "TRÁFEGO DIRETO")) $("#etq").style.display = "none";
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#bloco", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.28, ease: "power3.in" }, 0);
+      tl.fromTo("#varredura", { scaleX: 0 }, { scaleX: 1, duration: 0.28, ease: "power3.in" }, 0);
+      tl.to("#varredura", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.3, ease: "power3.out" }, 0.3);
+      tl.from("#nome", { y: 40, opacity: 0, duration: 0.45, ease: "back.out(1.6)" }, 0.32);
+      tl.from("#arroba", { y: 20, opacity: 0, duration: 0.35, ease: "power3.out" }, 0.45);
+      tl.from("#etq", { y: 18, opacity: 0, scale: 0.8, duration: 0.35, ease: "back.out(2.4)", transformOrigin: "0% 100%" }, 0.42);
+      tl.to("#lt", { x: -60, opacity: 0, duration: 0.4, ease: "power3.in" }, 4.4);
+      window.__timelines["08-lower-third"] = tl;
+    </script>
+  </body>
+</html>

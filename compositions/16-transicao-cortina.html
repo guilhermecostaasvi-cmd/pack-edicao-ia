@@ -1,0 +1,48 @@
+<!-- PACK EDIÇÃO IA · 16 transição cortina de cor (overlay, fundo transparente)
+     Base: componentes "directional-wipe" e "chromatic-aberration-wipe" do catálogo HyperFrames (Apache-2.0).
+     Três faixas cobrem a tela e saem do outro lado. Coloque o MEIO (0,45s) em cima do corte. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"cor1","type":"color","label":"Cor 1","default":"#ffd23f"},
+  {"id":"cor2","type":"color","label":"Cor 2","default":"#0b0b0f"},
+  {"id":"cor3","type":"color","label":"Cor 3","default":"#ffffff"},
+  {"id":"direcao","type":"string","label":"direita ou esquerda","default":"direita"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      .f { position: absolute; top: -15%; bottom: -15%; left: -10%; width: 125%; transform: skewX(-12deg); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="16-transicao-cortina" data-start="0" data-duration="0.95" data-width="1920" data-height="1080">
+      <div class="f" id="f1"></div>
+      <div class="f" id="f2"></div>
+      <div class="f" id="f3"></div>
+      <audio id="som16-1" data-start="0" data-duration="0.55" src="../assets/sfx/whoosh-curto.wav" data-volume="0.65"></audio>
+      <audio id="som16-2" data-start="0.42" data-duration="0.45" src="../assets/sfx/whoosh-saida.wav" data-volume="0.45"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const cores = [v.cor1 ?? "#ffd23f", v.cor3 ?? "#ffffff", v.cor2 ?? "#0b0b0f"];
+      ["#f1", "#f2", "#f3"].forEach((s, i) => (document.querySelector(s).style.background = cores[i]));
+      const dir = (v.direcao ?? "direita") === "esquerda" ? -1 : 1;
+      const fora = 2700 * dir;
+      gsap.set(".f", { x: -fora });
+      const tl = gsap.timeline({ paused: true });
+      // entrada escalonada: amarelo, branco, preto (o preto cobre tudo no meio)
+      tl.to("#f1", { x: 0, duration: 0.36, ease: "power3.in" }, 0.0);
+      tl.to("#f2", { x: 0, duration: 0.36, ease: "power3.in" }, 0.04);
+      tl.to("#f3", { x: 0, duration: 0.36, ease: "power3.in" }, 0.08);   // 0,44s = tela 100% coberta
+      tl.set(["#f1", "#f2"], { x: fora }, 0.45);
+      tl.to("#f3", { x: fora, duration: 0.42, ease: "power3.out" }, 0.47);
+      window.__timelines["16-transicao-cortina"] = tl;
+    </script>
+  </body>
+</html>

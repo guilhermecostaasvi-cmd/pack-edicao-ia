@@ -1,0 +1,70 @@
+<!-- PACK EDIÇÃO IA · 10 frase com palavra destacada a marca-texto (overlay, fundo transparente)
+     Base: bloco "mk-callout-highlight" e componente "marker-highlight" do catálogo HyperFrames (Apache-2.0).
+     Use quando você fala uma frase-chave: cada palavra entra no ritmo da fala e a principal ganha o marca-texto. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"frase","type":"string","label":"Frase","default":"O prompt não edita nada. Quem edita é a skill."},
+  {"id":"destaque","type":"string","label":"Palavra(s) pra destacar","default":"a skill."},
+  {"id":"posicao","type":"string","label":"Posição (centro/baixo)","default":"centro"},
+  {"id":"cor","type":"color","label":"Cor do marca-texto","default":"#ffd23f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      #frase { position: absolute; left: 160px; right: 160px; top: 50%; text-align: center; font-size: 96px; font-weight: 900; line-height: 1.12; letter-spacing: -0.02em; color: #fff;
+        text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+      #frase.baixo { top: auto; bottom: 120px; font-size: 76px; }
+      .p { display: inline-block; margin: 0 .12em; position: relative; }
+      .p.d { color: #fff; padding: 0 .1em; border-radius: .12em;
+        background-image: linear-gradient(var(--cor), var(--cor)); background-repeat: no-repeat; background-position: 0 70%; background-size: 0% 82%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="10-palavra-destaque" data-start="0" data-duration="4" data-width="1920" data-height="1080">
+      <div id="frase"></div>
+      <audio id="som10-1" data-start="0" data-duration="0.35" src="../assets/sfx/swoosh-agudo.wav" data-volume="0.3"></audio>
+      <audio id="som10-2" data-start="1.55" data-duration="1.5" src="../assets/sfx/slam-texto.wav" data-volume="0.6"></audio>
+      <audio id="som10-3" data-start="1.6" data-duration="0.25" src="../assets/sfx/swipe.wav" data-volume="0.5"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const FRASE = v.frase ?? "O prompt não edita nada. Quem edita é a skill.";
+      const DEST = (v.destaque ?? "a skill.").trim().toLowerCase().split(/\s+/);
+      const box = document.querySelector("#frase");
+      if ((v.posicao ?? "centro") === "baixo") box.classList.add("baixo"); else gsap.set(box, { yPercent: -50 });
+      document.querySelector("#root").style.setProperty("--cor", v.cor ?? "#ffd23f");
+
+      const palavras = FRASE.split(/\s+/);
+      // acha a sequência do destaque dentro da frase
+      let ini = -1;
+      for (let i = 0; i <= palavras.length - DEST.length; i++) {
+        if (DEST.every((d, k) => palavras[i + k].toLowerCase() === d)) { ini = i; break; }
+      }
+      const els = palavras.map((p, i) => {
+        const s = document.createElement("span");
+        s.className = "p";
+        const dest = ini >= 0 && i >= ini && i < ini + DEST.length;
+        if (dest) s.classList.add("d");
+        s.textContent = p;
+        box.appendChild(s); box.appendChild(document.createTextNode(" "));
+        return s;
+      });
+
+      const tl = gsap.timeline({ paused: true });
+      const ritmo = Math.min(0.16, 1.4 / palavras.length);
+      els.forEach((el, i) => tl.from(el, { y: 50, opacity: 0, duration: 0.32, ease: "back.out(2)" }, 0.05 + i * ritmo));
+      const mks = [...document.querySelectorAll(".p.d")];
+      tl.to(mks, { backgroundSize: "100% 82%", color: "#0b0b0f", textShadow: "0 0 0 rgba(0,0,0,0)", duration: 0.3, stagger: 0.08, ease: "power3.out" }, 1.6);
+      tl.fromTo(".p.d", { scale: 1 }, { scale: 1.08, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out" }, 1.6);
+      tl.to(box, { opacity: 0, y: "-=20", duration: 0.3, ease: "power2.in" }, 3.65);
+      window.__timelines["10-palavra-destaque"] = tl;
+    </script>
+  </body>
+</html>

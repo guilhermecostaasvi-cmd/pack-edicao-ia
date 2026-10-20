@@ -1,0 +1,89 @@
+<!-- PACK EDIÇÃO IA · 06 círculo + seta desenhados à mão (overlay, fundo transparente)
+     Base: componentes "hw-callout-circle" e "hw-arrow" do catálogo HyperFrames (Apache-2.0).
+     Use por cima de um print de gerenciador/dashboard pra apontar o número que importa. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"x","type":"number","label":"Centro X do círculo (px)","default":1180},
+  {"id":"y","type":"number","label":"Centro Y do círculo (px)","default":470},
+  {"id":"largura","type":"number","label":"Largura do círculo","default":420},
+  {"id":"altura","type":"number","label":"Altura do círculo","default":170},
+  {"id":"texto","type":"string","label":"Texto escrito à mão","default":"olha esse ROI!"},
+  {"id":"cor","type":"color","label":"Cor da caneta","default":"#ffd23f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      svg { position: absolute; inset: 0; overflow: visible; }
+      .tinta { fill: none; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 4px 10px rgba(0,0,0,.45)); }
+      #nota { position: absolute; font-family: var(--pk-mao); font-weight: 700; font-size: 84px; white-space: nowrap; text-shadow: 0 4px 14px rgba(0,0,0,.55); transform-origin: 0% 50%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="06-circulo-destaque" data-start="0" data-duration="3.5" data-width="1920" data-height="1080">
+      <svg width="1920" height="1080" viewBox="0 0 1920 1080">
+        <path id="circ" class="tinta" stroke-width="9" d=""></path>
+        <path id="seta" class="tinta" stroke-width="8" d=""></path>
+        <path id="ponta" class="tinta" stroke-width="8" d=""></path>
+      </svg>
+      <div id="nota">olha esse ROI!</div>
+      <audio id="som06-1" data-start="0" data-duration="0.6" src="../assets/sfx/whoosh-curto.wav" data-volume="0.3"></audio>
+      <audio id="som06-2" data-start="0.55" data-duration="0.12" src="../assets/sfx/pop.wav" data-volume="0.55"></audio>
+      <audio id="som06-3" data-start="0.95" data-duration="0.35" src="../assets/sfx/swoosh-agudo.wav" data-volume="0.4"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const CX = Number(v.x ?? 1180), CY = Number(v.y ?? 470), RX = Number(v.largura ?? 420) / 2, RY = Number(v.altura ?? 170) / 2;
+      const COR = v.cor ?? "#ffd23f";
+      document.querySelectorAll(".tinta").forEach((p) => p.setAttribute("stroke", COR));
+      const nota = document.querySelector("#nota");
+      nota.textContent = v.texto ?? "olha esse ROI!";
+      nota.style.color = COR;
+
+      // elipse "tremida" desenhada à mão: 1,15 volta, raio oscilando um pouco (determinístico)
+      let d = "";
+      const passos = 90;
+      for (let i = 0; i <= passos; i++) {
+        const a = -2.4 + (i / passos) * Math.PI * 2 * 1.15;
+        const w = 1 + 0.03 * Math.sin(i * 0.21) + 0.012 * Math.sin(i * 0.53);
+        const x = CX + Math.cos(a) * RX * w * (1 + i * 0.0006);
+        const y = CY + Math.sin(a) * RY * w;
+        d += (i ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1);
+      }
+      document.querySelector("#circ").setAttribute("d", d);
+
+      // seta: sai do texto e curva até a borda do círculo
+      const acima = CY > 540;
+      const tx = CX + RX * 0.35, ty = acima ? CY - RY - 230 : CY + RY + 210;
+      nota.style.left = tx + 30 + "px";
+      nota.style.top = ty - 52 + "px";
+      const fx = CX + RX * 0.55, fy = acima ? CY - RY - 14 : CY + RY + 14;
+      const cxp = tx - 40, cyp = (ty + fy) / 2;
+      document.querySelector("#seta").setAttribute("d", `M ${tx} ${ty} Q ${cxp} ${cyp} ${fx} ${fy}`);
+      const ang = Math.atan2(fy - cyp, fx - cxp);
+      const p1 = [fx - 34 * Math.cos(ang - 0.5), fy - 34 * Math.sin(ang - 0.5)];
+      const p2 = [fx - 34 * Math.cos(ang + 0.5), fy - 34 * Math.sin(ang + 0.5)];
+      document.querySelector("#ponta").setAttribute("d", `M ${p1[0]} ${p1[1]} L ${fx} ${fy} L ${p2[0]} ${p2[1]}`);
+
+      const prep = (sel) => { const p = document.querySelector(sel); const L = p.getTotalLength(); gsap.set(p, { strokeDasharray: L, strokeDashoffset: L, opacity: 0 }); return p; };
+      const circ = prep("#circ"), seta = prep("#seta"), ponta = prep("#ponta");
+
+      const tl = gsap.timeline({ paused: true });
+      tl.set([circ], { opacity: 1 }, 0.01);
+      tl.to(circ, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, 0);
+      tl.fromTo(nota, { opacity: 0, scale: 0.6, rotation: -6 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.4, ease: "back.out(2.5)" }, 0.55);
+      tl.set(seta, { opacity: 1 }, 0.96);
+      tl.to(seta, { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 0.95);
+      tl.set(ponta, { opacity: 1 }, 1.29);
+      tl.to(ponta, { strokeDashoffset: 0, duration: 0.15, ease: "power2.out" }, 1.28);
+      tl.to(["#circ", "#seta", "#ponta", "#nota"], { opacity: 0, duration: 0.3, ease: "power2.in" }, 3.15);
+      window.__timelines["06-circulo-destaque"] = tl;
+    </script>
+  </body>
+</html>

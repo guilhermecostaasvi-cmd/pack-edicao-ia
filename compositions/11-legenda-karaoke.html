@@ -1,0 +1,57 @@
+<!-- PACK EDIÇÃO IA · 11 legenda palavra por palavra, estilo karaokê (overlay, fundo transparente)
+     Base: componentes "caption-highlight" e "caption-pill-karaoke" do catálogo HyperFrames (Apache-2.0).
+     No uso real, o Claude troca a lista de palavras pelos tempos da sua transcrição (veja a SKILL.md). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"texto","type":"string","label":"Texto falado","default":"Quem roda tráfego sabe: criativo é munição. E agora a fábrica de munição é você."},
+  {"id":"palavras_por_tela","type":"number","label":"Palavras por tela","default":4},
+  {"id":"velocidade","type":"number","label":"Palavras por segundo","default":3.2}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      .tela { position: absolute; left: 120px; right: 120px; bottom: 120px; text-align: center; opacity: 0; }
+      .w { display: inline-block; margin: 0 .1em; padding: .02em .18em .06em; border-radius: .2em; font-size: 78px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; color: #fff;
+        -webkit-text-stroke-width: 10px; -webkit-text-stroke-color: #0b0b0f; paint-order: stroke fill; background: rgba(0,0,0,0); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="11-legenda-karaoke" data-start="0" data-duration="5" data-width="1920" data-height="1080"></div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const palavras = String(v.texto ?? "Quem roda tráfego sabe: criativo é munição. E agora a fábrica de munição é você.").split(/\s+/).filter(Boolean);
+      const POR = Math.max(1, Number(v.palavras_por_tela ?? 4));
+      const PPS = Math.max(0.5, Number(v.velocidade ?? 3.2));
+      const root = document.querySelector("#root");
+      const ACENTO = getComputedStyle(document.documentElement).getPropertyValue("--pk-acento").trim() || "#ffd23f";
+
+      // tempos de cada palavra: no uso real, substitua por start/end da transcrição
+      const tempos = palavras.map((p, i) => ({ p, ini: 0.15 + i / PPS, fim: 0.15 + (i + 1) / PPS }));
+      const tl = gsap.timeline({ paused: true });
+      for (let g = 0; g < tempos.length; g += POR) {
+        const grupo = tempos.slice(g, g + POR);
+        const tela = document.createElement("div");
+        tela.className = "tela";
+        const spans = grupo.map((w) => { const s = document.createElement("span"); s.className = "w"; s.textContent = w.p; tela.appendChild(s); tela.appendChild(document.createTextNode(" ")); return s; });
+        root.appendChild(tela);
+        const ini = grupo[0].ini, fim = grupo[grupo.length - 1].fim;
+        tl.fromTo(tela, { opacity: 0, y: 20, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: "power2.out" }, ini);
+        grupo.forEach((w, k) => {
+          // set() em vez de call(): funciona mesmo quando o render pula pra qualquer quadro
+          tl.set(spans[k], { backgroundColor: ACENTO, color: "#0b0b0f", WebkitTextStrokeWidth: 0 }, w.ini);
+          tl.set(spans[k], { backgroundColor: "rgba(0,0,0,0)", color: "#ffffff", WebkitTextStrokeWidth: 10 }, w.fim);
+          tl.fromTo(spans[k], { scale: 1 }, { scale: 1.1, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.out" }, w.ini);
+        });
+        tl.to(tela, { opacity: 0, duration: 0.06 }, fim);
+      }
+      window.__timelines["11-legenda-karaoke"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- PACK EDIÇÃO IA · showreel horizontal: mostra como as animações se encaixam numa edição.
+     Cada bloco abaixo é uma animação do pack montada com data-composition-src.
+     É exatamente assim que o Claude coloca o pack dentro do SEU vídeo (veja skill/SKILL.md). -->
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      .clip { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="33" data-width="1920" data-height="1080">
+      <!-- cenas (uma depois da outra) -->
+      <div class="clip" id="cena-cap1" data-composition-id="12-titulo-capitulo" data-composition-src="compositions/12-titulo-capitulo.html" data-start="0" data-duration="3.5" data-width="1920" data-height="1080" data-track-index="0"
+           data-variable-values='{"numero":"ETAPA 1","titulo":"Provar o resultado","subtitulo":"número na primeira frase"}'></div>
+      <div class="clip" id="cena-conta" data-composition-id="01-contador-faturamento" data-composition-src="compositions/01-contador-faturamento.html" data-start="3.5" data-duration="5" data-width="1920" data-height="1080" data-track-index="0"></div>
+      <div class="clip" id="cena-zoom" data-composition-id="07-zoom-no-print" data-composition-src="compositions/07-zoom-no-print.html" data-start="8.5" data-duration="5" data-width="1920" data-height="1080" data-track-index="0"></div>
+      <div class="clip" id="cena-roi" data-composition-id="04-roi-destaque" data-composition-src="compositions/04-roi-destaque.html" data-start="13.5" data-duration="4.5" data-width="1920" data-height="1080" data-track-index="0"></div>
+      <div class="clip" id="cena-graf" data-composition-id="05-grafico-crescimento" data-composition-src="compositions/05-grafico-crescimento.html" data-start="18" data-duration="6" data-width="1920" data-height="1080" data-track-index="0"></div>
+      <div class="clip" id="cena-lista" data-composition-id="14-checklist" data-composition-src="compositions/14-checklist.html" data-start="24" data-duration="5.5" data-width="1920" data-height="1080" data-track-index="0"
+           data-variable-values='{"titulo":"A esteira em 4 passos","itens":"Decupar|Mapear a edição|Aplicar o pack|Atualizar a skill"}'></div>
+      <div class="clip" id="cena-fim" data-composition-id="13-headline-impacto" data-composition-src="compositions/13-headline-impacto.html" data-start="29.8" data-duration="2.8" data-width="1920" data-height="1080" data-track-index="0"
+           data-variable-values='{"linha1":"NÃO É FERRAMENTA.","linha2":"É FUNCIONÁRIO.","escurecer":false}'></div>
+
+      <!-- camadas por cima (overlays transparentes) -->
+      <div class="clip" id="cena-nota-zoom" data-composition-id="06-circulo-destaque" data-composition-src="compositions/06-circulo-destaque.html" data-start="10.1" data-duration="3.2" data-width="1920" data-height="1080" data-track-index="1"
+           data-variable-values='{"x":1000,"y":540,"largura":640,"altura":190,"texto":"olha o 3,2x"}'></div>
+      <div class="clip" id="cena-venda" data-composition-id="02-notificacao-venda" data-composition-src="compositions/02-notificacao-venda.html" data-start="19.5" data-duration="4" data-width="1920" data-height="1080" data-track-index="1"
+           data-variable-values='{"valor":"R$ 197,00","detalhe":"Cartão · Produto principal"}'></div>
+
+      <!-- transições em cima dos cortes (o meio de cada uma cai no corte) -->
+      <div class="clip" id="cena-t1" data-composition-id="15-transicao-flash" data-composition-src="compositions/15-transicao-flash.html" data-start="3.1" data-duration="0.9" data-width="1920" data-height="1080" data-track-index="2"></div>
+      <div class="clip" id="cena-t2" data-composition-id="16-transicao-cortina" data-composition-src="compositions/16-transicao-cortina.html" data-start="8.05" data-duration="0.95" data-width="1920" data-height="1080" data-track-index="2"></div>
+      <div class="clip" id="cena-t3" data-composition-id="17-transicao-glitch" data-composition-src="compositions/17-transicao-glitch.html" data-start="13.2" data-duration="0.7" data-width="1920" data-height="1080" data-track-index="2"></div>
+      <div class="clip" id="cena-t4" data-composition-id="16-transicao-cortina" data-composition-src="compositions/16-transicao-cortina.html" data-start="23.55" data-duration="0.95" data-width="1920" data-height="1080" data-track-index="2"
+           data-variable-values='{"cor1":"#22c55e","direcao":"esquerda"}'></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

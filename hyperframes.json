@@ -1,0 +1,134 @@
+{
+  "$schema": "https://hyperframes.heygen.com/schema/hyperframes.json",
+  "registry": "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry",
+  "paths": {
+    "blocks": "compositions",
+    "components": "compositions/components",
+    "assets": "assets"
+  },
+  "media": {
+    "autoProxy": true
+  },
+  "registryItems": [
+    {
+      "name": "apple-money-count",
+      "type": "hyperframes:block",
+      "target": "compositions/apple-money-count.html"
+    },
+    {
+      "name": "mk-progress-stat",
+      "type": "hyperframes:block",
+      "target": "compositions/mk-progress-stat.html"
+    },
+    {
+      "name": "notification-cascade",
+      "type": "hyperframes:block",
+      "target": "compositions/notification-cascade.html"
+    },
+    {
+      "name": "native-notification-pop",
+      "type": "hyperframes:component",
+      "target": "compositions/components/native-notification-pop.html"
+    },
+    {
+      "name": "count-up",
+      "type": "hyperframes:component",
+      "target": "compositions/components/count-up.html"
+    },
+    {
+      "name": "yt-circle-pointer",
+      "type": "hyperframes:component",
+      "target": "compositions/components/yt-circle-pointer.html"
+    },
+    {
+      "name": "hw-callout-circle",
+      "type": "hyperframes:component",
+      "target": "compositions/components/hw-callout-circle.html"
+    },
+    {
+      "name": "ui-focus-zoom",
+      "type": "hyperframes:component",
+      "target": "compositions/components/ui-focus-zoom.html"
+    },
+    {
+      "name": "mk-line-graph",
+      "type": "hyperframes:block",
+      "target": "compositions/mk-line-graph.html"
+    },
+    {
+      "name": "lt-bold-block",
+      "type": "hyperframes:block",
+      "target": "compositions/lt-bold-block.html"
+    },
+    {
+      "name": "lt-color-block",
+      "type": "hyperframes:block",
+      "target": "compositions/lt-color-block.html"
+    },
+    {
+      "name": "yt-lower-third",
+      "type": "hyperframes:block",
+      "target": "compositions/yt-lower-third.html"
+    },
+    {
+      "name": "mk-callout-highlight",
+      "type": "hyperframes:block",
+      "target": "compositions/mk-callout-highlight.html"
+    },
+    {
+      "name": "caption-highlight",
+      "type": "hyperframes:component",
+      "target": "compositions/components/caption-highlight.html"
+    },
+    {
+      "name": "caption-pill-karaoke",
+      "type": "hyperframes:component",
+      "target": "compositions/components/caption-pill-karaoke.html"
+    },
+    {
+      "name": "headline-slam",
+      "type": "hyperframes:component",
+      "target": "compositions/components/headline-slam.html"
+    },
+    {
+      "name": "titlecard-lockup",
+      "type": "hyperframes:component",
+      "target": "compositions/components/titlecard-lockup.html"
+    },
+    {
+      "name": "whip-pan",
+      "type": "hyperframes:block",
+      "target": "compositions/whip-pan.html"
+    },
+    {
+      "name": "flash-through-white",
+      "type": "hyperframes:block",
+      "target": "compositions/flash-through-white.html"
+    },
+    {
+      "name": "glitch",
+      "type": "hyperframes:block",
+      "target": "compositions/glitch.html"
+    },
+    {
+      "name": "cinematic-zoom",
+      "type": "hyperframes:block",
+      "target": "compositions/cinematic-zoom.html"
+    },
+    {
+      "name": "instagram-follow",
+      "type": "hyperframes:block",
+      "target": "compositions/instagram-follow.html"
+    },
+    {
+      "name": "comparison-split",
+      "type": "hyperframes:component",
+      "target": "compositions/components/comparison-split.html"
+    },
+    {
+      "name": "beat-accent",
+      "type": "hyperframes:component",
+      "target": "compositions/components/beat-accent.html"
+    }
+  ]
+}

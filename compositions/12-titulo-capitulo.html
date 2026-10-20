@@ -1,0 +1,64 @@
+<!-- PACK EDIÇÃO IA · 12 cartela de capítulo / etapa
+     Base: componentes "titlecard-lockup" e "line-swap" do catálogo HyperFrames (Apache-2.0). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"numero","type":"string","label":"Número ou rótulo","default":"ETAPA 1"},
+  {"id":"titulo","type":"string","label":"Título","default":"Achar a oferta"},
+  {"id":"subtitulo","type":"string","label":"Subtítulo (opcional)","default":"os 4 filtros do radar"},
+  {"id":"fundo","type":"color","label":"Cor de fundo","default":"#0b0b0f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); color: #fff; background: var(--fundo, #0b0b0f); }
+      #grande { position: absolute; right: 120px; bottom: -110px; font-size: 760px; font-weight: 900; line-height: 1; color: rgba(255,255,255,.035); letter-spacing: -0.05em; }
+      #bloco { position: absolute; left: 200px; top: 50%; transform: translateY(-50%); }
+      #num { display: inline-block; font-family: var(--pk-mono); font-weight: 700; font-size: 34px; letter-spacing: .2em; color: #0b0b0f; background: var(--pk-acento); padding: 10px 20px; border-radius: 8px; }
+      .mascara { overflow: hidden; padding-bottom: .08em; }
+      #titulo { font-size: 150px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.02; margin-top: 26px; }
+      #sub { font-size: 46px; font-weight: 500; color: var(--pk-cinza); margin-top: 18px; }
+      #linha { height: 8px; width: 240px; background: var(--pk-acento); border-radius: 4px; margin-top: 38px; transform-origin: 0 50%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="12-titulo-capitulo" data-start="0" data-duration="3.5" data-width="1920" data-height="1080">
+      <div id="grande">1</div>
+      <div id="bloco">
+        <div id="num">ETAPA 1</div>
+        <div class="mascara"><div id="titulo">Achar a oferta</div></div>
+        <div class="mascara"><div id="sub">os 4 filtros do radar</div></div>
+        <div id="linha"></div>
+      </div>
+      <audio id="som12-1" data-start="0" data-duration="0.8" src="../assets/sfx/whoosh-grave.wav" data-volume="0.55"></audio>
+      <audio id="som12-2" data-start="0.35" data-duration="1.6" src="../assets/sfx/impacto-grave.wav" data-volume="0.5"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      const NUM = v.numero ?? "ETAPA 1";
+      $("#num").textContent = NUM;
+      $("#titulo").textContent = v.titulo ?? "Achar a oferta";
+      const SUB = v.subtitulo ?? "os 4 filtros do radar";
+      if (SUB) $("#sub").textContent = SUB; else $("#sub").parentElement.style.display = "none";
+      $("#grande").textContent = (NUM.match(/\d+/) || [""])[0] || "";
+      $("#root").style.setProperty("--fundo", v.fundo ?? "#0b0b0f");
+
+      const tl = gsap.timeline({ paused: true });
+      tl.from("#grande", { x: 200, opacity: 0, duration: 1.2, ease: "power3.out" }, 0);
+      tl.from("#num", { y: 30, opacity: 0, scale: 0.85, duration: 0.4, ease: "back.out(2.2)", transformOrigin: "0% 100%" }, 0.1);
+      tl.from("#titulo", { yPercent: 110, duration: 0.6, ease: "power4.out" }, 0.3);
+      tl.from("#sub", { yPercent: 120, duration: 0.5, ease: "power4.out" }, 0.48);
+      tl.from("#linha", { scaleX: 0, duration: 0.5, ease: "power3.out" }, 0.6);
+      tl.to("#grande", { x: -40, duration: 2.3, ease: "none" }, 1.2);
+      tl.to("#titulo", { yPercent: -110, duration: 0.35, ease: "power3.in" }, 3.1);
+      tl.to(["#num", "#sub", "#linha", "#grande"], { opacity: 0, duration: 0.3, ease: "power2.in" }, 3.15);
+      window.__timelines["12-titulo-capitulo"] = tl;
+    </script>
+  </body>
+</html>

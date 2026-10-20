@@ -1,0 +1,48 @@
+<!-- PACK EDIÇÃO IA · 19 barra de progresso (vertical 9:16, overlay transparente)
+     Base: componentes "separator" (progress reveal) e "conic-progress-ring" do catálogo HyperFrames (Apache-2.0).
+     Uma barra fina no topo que enche até o fim do vídeo: segura a retenção em criativo e reels.
+     Passe a variável "duracao" igual ao data-duration onde você montar ela (padrão 30s). -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"duracao","type":"number","label":"Duração do vídeo em segundos (igual ao data-duration)","default":30},
+  {"id":"cor","type":"color","label":"Cor da barra","default":"#ffd23f"},
+  {"id":"altura","type":"number","label":"Espessura (px)","default":14},
+  {"id":"posicao","type":"string","label":"topo ou base","default":"topo"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      #trilho { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: rgba(255,255,255,.22); }
+      #enche { position: absolute; inset: 0; transform-origin: 0 50%; box-shadow: 0 0 18px var(--cor, #ffd23f); background: var(--cor, #ffd23f); }
+      #ponta { position: absolute; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 5px var(--cor, #ffd23f), 0 4px 10px rgba(0,0,0,.4); left: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="19-barra-progresso" data-start="0" data-duration="30" data-width="1080" data-height="1920">
+      <div id="trilho"><div id="enche"></div><div id="ponta"></div></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const root = document.querySelector("#root");
+      root.style.setProperty("--cor", v.cor ?? "#ffd23f");
+      const trilho = document.querySelector("#trilho");
+      const H = Number(v.altura ?? 14);
+      trilho.style.height = H + "px";
+      if ((v.posicao ?? "topo") === "base") { trilho.style.top = "auto"; trilho.style.bottom = "0"; }
+      const D = Number(v.duracao ?? root.getAttribute("data-duration"));
+      gsap.set("#enche", { scaleX: 0 });
+      gsap.set("#ponta", { x: 0 });
+      const tl = gsap.timeline({ paused: true });
+      // começa rápido e desacelera: dá sensação de que "falta pouco" (truque de retenção)
+      tl.to("#enche", { scaleX: 1, duration: D, ease: "power1.out" }, 0);
+      tl.to("#ponta", { x: 1080, duration: D, ease: "power1.out" }, 0);
+      window.__timelines["19-barra-progresso"] = tl;
+    </script>
+  </body>
+</html>

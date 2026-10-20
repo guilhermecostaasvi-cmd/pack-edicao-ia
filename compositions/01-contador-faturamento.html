@@ -1,0 +1,103 @@
+<!-- PACK EDIÇÃO IA · 01 contador de faturamento
+     Base: bloco "apple-money-count" do catálogo HyperFrames (Apache-2.0), adaptado pra R$ e pt-BR. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"valor","type":"number","label":"Valor final","default":10000},
+  {"id":"prefixo","type":"string","label":"Moeda","default":"R$"},
+  {"id":"legenda","type":"string","label":"Legenda embaixo do número","default":"faturado hoje"},
+  {"id":"centavos","type":"boolean","label":"Mostrar centavos","default":false},
+  {"id":"fundo","type":"color","label":"Cor de fundo","default":"#0b0b0f"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); color: var(--pk-texto); }
+      #fundo { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, #1a1a22 0%, var(--fundo, #0b0b0f) 70%); }
+      #flash { position: absolute; inset: 0; background: var(--pk-verde); opacity: 0; mix-blend-mode: screen; }
+      .palco { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 5; }
+      #valor { font-size: 200px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; text-shadow: 0 20px 60px rgba(0,0,0,.45); -webkit-text-stroke: 14px #0b0b0f; paint-order: stroke fill; }
+      #valor .moeda { font-size: 0.5em; font-weight: 800; vertical-align: 0.62em; margin-right: 0.12em; opacity: .9; }
+      #legenda { -webkit-text-stroke: 8px #0b0b0f; paint-order: stroke fill; font-size: 44px; font-weight: 600; color: var(--pk-cinza); letter-spacing: 0.02em; text-transform: lowercase; }
+      #explosao { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+      .nota { position: absolute; left: 50%; top: 50%; width: 112px; height: 56px; border-radius: 10px; background: linear-gradient(135deg, #3ddc84, #1f9d55); box-shadow: inset 0 0 0 3px rgba(0,0,0,.12), 0 18px 30px rgba(0,0,0,.35); display: grid; place-items: center; opacity: 0; }
+      .nota::before { content: ""; position: absolute; inset: 8px 14px; border: 2px solid rgba(255,255,255,.35); border-radius: 999px; }
+      .nota span { position: relative; font-weight: 900; font-size: 22px; color: #0d3b22; }
+      .moedinha { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #fff6b0 0%, #ffd23f 42%, #c99700 100%); box-shadow: 0 16px 28px rgba(0,0,0,.35); opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="01-contador-faturamento" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="fundo"></div>
+      <div id="flash"></div>
+      <div class="palco">
+        <div id="valor"><span class="moeda">R$</span><span id="num">0</span></div>
+        <div id="legenda">faturado hoje</div>
+      </div>
+      <div id="explosao" data-layout-allow-overflow></div>
+      <audio id="som01-1" data-start="0" data-duration="3.2" src="../assets/sfx/riser-4s.wav" data-volume="0.35" data-fade-out="0.2"></audio>
+      <audio id="som01-2" data-start="3.12" data-duration="2.4" src="../assets/sfx/cha-ching.wav" data-volume="0.9"></audio>
+      <audio id="som01-3" data-start="3.1" data-duration="1.6" src="../assets/sfx/impacto-grave.wav" data-volume="0.55"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const VALOR = Number(v.valor ?? 10000);
+      const CENT = !!v.centavos;
+      document.querySelector(".moeda").textContent = v.prefixo ?? "R$";
+      document.querySelector("#legenda").textContent = v.legenda ?? "faturado hoje";
+      document.querySelector("#root").style.setProperty("--fundo", v.fundo ?? "#0b0b0f");
+
+      const num = document.querySelector("#num");
+      const fmt = (x) => x.toLocaleString("pt-BR", { minimumFractionDigits: CENT ? 2 : 0, maximumFractionDigits: CENT ? 2 : 0 });
+      const estado = { x: 0 };
+      const pintar = () => (num.textContent = fmt(CENT ? estado.x : Math.round(estado.x)));
+      pintar();
+
+      // explosão de notas e moedas (posições determinísticas, espiral áurea)
+      const caixa = document.querySelector("#explosao");
+      const itens = [];
+      for (let i = 0; i < 54; i++) {
+        const moeda = i % 3 === 0;
+        const el = document.createElement("div");
+        el.className = moeda ? "moedinha" : "nota";
+        if (!moeda) el.innerHTML = "<span>R$</span>";
+        caixa.appendChild(el);
+        const ang = i * 2.39996;
+        const anel = i % 5;
+        itens.push({
+          el,
+          x: Math.max(-880, Math.min(880, Math.cos(ang) * (300 + anel * 140))),
+          y: Math.max(-480, Math.min(480, Math.sin(ang * 1.13) * (180 + anel * 70))),
+          rot: ((i * 43) % 160) - 80,
+          esc: 0.7 + (i % 5) * 0.07,
+          atraso: (i % 8) * 0.025,
+        });
+      }
+
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      gsap.set(itens.map((i) => i.el), { xPercent: -50, yPercent: -50, scale: 0.2, opacity: 0 });
+
+      tl.from("#valor", { y: 40, opacity: 0, scale: 0.96, duration: 0.5 }, 0);
+      tl.from("#legenda", { y: 20, opacity: 0, duration: 0.5 }, 0.15);
+      tl.to(estado, { x: VALOR, duration: 3.1, ease: "power2.inOut", onUpdate: pintar, onComplete: () => { estado.x = VALOR; pintar(); } }, 0);
+      tl.to("#valor", { color: "#3ddc84", duration: 0.15 }, 3.1);
+      tl.to("#valor", { scale: 1.08, duration: 0.15, ease: "back.out(2.5)" }, 3.1);
+      tl.to("#valor", { scale: 1, duration: 0.3, ease: "power2.out" }, 3.27);
+      tl.to("#flash", { opacity: 0.32, duration: 0.07, ease: "none" }, 3.1);
+      tl.to("#flash", { opacity: 0, duration: 0.8, ease: "power2.out" }, 3.18);
+      itens.forEach((it) => {
+        tl.to(it.el, { x: it.x, y: it.y, rotation: it.rot, scale: it.esc, opacity: 1, duration: 0.8, ease: "power4.out" }, 3.18 + it.atraso);
+        tl.to(it.el, { y: it.y + (it.y < 0 ? -60 : 60), scale: it.esc * 0.5, opacity: 0, duration: 0.4, ease: "power2.in" }, 4.15 + it.atraso);
+      });
+      tl.to([".palco"], { opacity: 0, y: -12, duration: 0.3, ease: "power2.in" }, 4.65);
+
+      window.__timelines["01-contador-faturamento"] = tl;
+    </script>
+  </body>
+</html>

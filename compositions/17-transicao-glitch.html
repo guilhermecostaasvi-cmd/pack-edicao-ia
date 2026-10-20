@@ -1,0 +1,72 @@
+<!-- PACK EDIÇÃO IA · 17 transição glitch (overlay, fundo transparente)
+     Base: bloco "glitch" e componentes "rgb-glitch-text"/"scan-band" do catálogo HyperFrames (Apache-2.0).
+     Faixas de cor, blocos e ruído digital. Pico em 0,3s: coloque em cima do corte. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"intensidade","type":"number","label":"Intensidade (0,5 a 1,5)","default":1}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      .b { position: absolute; left: 0; width: 100%; opacity: 0; mix-blend-mode: screen; }
+      .q { position: absolute; opacity: 0; }
+      #ruido { position: absolute; inset: 0; opacity: 0;
+        background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.18) 0 2px, rgba(0,0,0,0) 2px 5px); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="17-transicao-glitch" data-start="0" data-duration="0.7" data-width="1920" data-height="1080">
+      <div id="ruido"></div>
+      <audio id="som17-1" data-start="0.02" data-duration="0.5" src="../assets/sfx/glitch-digital.wav" data-volume="0.7"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const K = Math.max(0.5, Math.min(1.5, Number(v.intensidade ?? 1)));
+      const root = document.querySelector("#root");
+      const cores = ["#ff2bd6", "#00e5ff", "#ffd23f", "#ffffff", "#0b0b0f", "#22c55e"];
+      const tl = gsap.timeline({ paused: true });
+      // faixas horizontais (posições pseudoaleatórias, mas fixas)
+      const nF = Math.round(16 * K);
+      for (let i = 0; i < nF; i++) {
+        const b = document.createElement("div");
+        b.className = "b";
+        const h = 8 + ((i * 37) % 70);
+        b.style.top = ((i * 211) % 1040) + "px";
+        b.style.height = h + "px";
+        b.style.background = cores[i % cores.length];
+        if (i % 4 === 0) b.style.mixBlendMode = "normal";
+        root.appendChild(b);
+        const t0 = 0.04 + ((i * 7) % 9) * 0.03;
+        tl.fromTo(b, { opacity: 0, x: ((i % 2) ? -1 : 1) * 200 }, { opacity: 0.85, x: ((i * 53) % 120) - 60, duration: 0.03, ease: "none" }, t0);
+        tl.to(b, { x: ((i % 3) - 1) * 140, duration: 0.05, ease: "steps(2)" }, t0 + 0.05);
+        tl.to(b, { opacity: 0, duration: 0.02 }, t0 + 0.12 + (i % 3) * 0.03);
+      }
+      // blocos "quebrados"
+      const nQ = Math.round(10 * K);
+      for (let i = 0; i < nQ; i++) {
+        const q = document.createElement("div");
+        q.className = "q";
+        q.style.left = ((i * 389) % 1700) + "px";
+        q.style.top = ((i * 263) % 950) + "px";
+        q.style.width = 60 + ((i * 71) % 260) + "px";
+        q.style.height = 30 + ((i * 43) % 120) + "px";
+        q.style.background = cores[(i + 2) % cores.length];
+        root.appendChild(q);
+        const t0 = 0.18 + (i % 5) * 0.025;
+        tl.to(q, { opacity: 0.9, duration: 0.01 }, t0);
+        tl.to(q, { opacity: 0, duration: 0.01 }, t0 + 0.06 + (i % 3) * 0.02);
+      }
+      tl.to("#ruido", { opacity: 1, duration: 0.03 }, 0.2);
+      tl.to("#ruido", { y: 6, duration: 0.15, ease: "steps(5)" }, 0.2);
+      tl.to("#ruido", { opacity: 0, duration: 0.08 }, 0.42);
+      tl.to("#root", { opacity: 1, duration: 0.01 }, 0.69);
+      window.__timelines["17-transicao-glitch"] = tl;
+    </script>
+  </body>
+</html>
