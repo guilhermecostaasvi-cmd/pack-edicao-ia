@@ -34,3 +34,7 @@ Ordem dos sons em ouvir-todos-os-sons.mp3
 0:55.74  zoom-out
 0:57.04  flash-brilho
 0:59.84  check
+1:01.67  obturador
+1:02.75  papel-giro
+1:04.45  brilho-particulas
+1:07.55  vidro-tilin

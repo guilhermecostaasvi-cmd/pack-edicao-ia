@@ -1,6 +1,6 @@
 # 🎬 Pack de Edição IA
 
-**23 animações (1 em 3D) + 34 efeitos sonoros + 5 skills próprias + 6 skills extras de outros criadores.**
+**27 animações (1 em 3D) + 38 efeitos sonoros + 5 skills próprias + 6 skills extras de outros criadores.**
 Edite vídeo de YouTube, criativo de anúncio e VSL com o Claude (Opus 5.5) + HyperFrames, sem abrir editor.
 
 Tudo em português e em R$, pensado pra quem roda tráfego: prova de venda, ROI, print de gerenciador,
@@ -10,6 +10,9 @@ gancho de criativo, selo de oferta.
   <img src="docs/img/preview-horizontal.gif" width="640" alt="Prévia das animações horizontais" />
   &nbsp;
   <img src="docs/img/preview-vertical.gif" width="200" alt="Prévia das animações verticais" />
+</p>
+<p align="center">
+  <img src="docs/img/preview-novos.gif" width="640" alt="Vidro líquido, obturador, partículas e jornal" />
 </p>
 
 ---
@@ -32,7 +35,7 @@ abra a pasta `renders/` e arraste os `.webm` (fundo transparente) pro seu CapCut
 
 ## 📦 O que tem dentro
 
-### 23 animações (`compositions/`)
+### 27 animações (`compositions/`)
 
 Cada uma é editável: texto, valor, cor. Você pede em português e o Claude gera com os seus números.
 
@@ -54,16 +57,20 @@ Cada uma é editável: texto, valor, cor. Você pede em português e o Claude ge
 | | | | 21 | Antes × depois com divisória |
 | | | | 22 | CTA "me chama na DM" |
 
-| # | 3D explicativo |
-|---|---|
-| 23 | Modelo 3D que gira, é cortado no meio e mostra cada região com cor e etiqueta. Vem com um coração anatômico real. [Guia](docs/06-animacoes-3d.md) |
+| # | Efeitos especiais | | # | 3D explicativo |
+|---|---|---|---|---|
+| 24 | Notificação de vidro líquido (estilo iOS 26) | | 23 | Modelo 3D que gira, é cortado no meio e mostra cada região com cor e etiqueta. Vem com um coração anatômico real. [Guia](docs/06-animacoes-3d.md) |
+| 25 | Texto que se monta com partículas | | | |
+| 26 | Manchete de jornal girando | | | |
+| 27 | Transição obturador de câmera | | | |
 
+Demo dos 4 efeitos novos juntos: `renders/00-novos-efeitos.mp4`.
 Prévia de cada uma em `renders/` (MP4) e versão com fundo transparente (WebM) nas que são overlay.
 
-### 34 efeitos sonoros (`assets/sfx/`)
+### 38 efeitos sonoros (`assets/sfx/`)
 
 Whoosh, impacto, riser, pop, clique, tecla, digitação, cha-ching, moeda, notificação de venda,
-sucesso, glitch, estática, zoom, flash, check. Todos com o mesmo volume.
+sucesso, glitch, estática, zoom, flash, check, obturador de câmera, papel girando, brilho e vidro. Todos com o mesmo volume.
 Ouça todos em sequência: `renders/ouvir-todos-os-sons.mp3`.
 
 **Gerados por código** (`assets/sfx/gerar_sons.py`): nenhum arquivo de banco de som de terceiro.
@@ -110,8 +117,8 @@ Detalhes, links originais e como instalar: [`extras/README.md`](extras/README.md
 ## 📁 Estrutura
 
 ```
-compositions/   as 23 animações (HTML + GSAP; a 23 usa three.js), cada uma com variáveis
-assets/         brand.css (sua identidade), fontes, GSAP, three.js, modelos 3D e os 34 sons
+compositions/   as 27 animações (HTML + GSAP; a 23 usa three.js), cada uma com variáveis
+assets/         brand.css (sua identidade), fontes, GSAP, three.js, modelos 3D e os 38 sons
 skills/         as 5 skills do Pack
 extras/         6 pacotes de skills de outros criadores (MIT, com crédito)
 docs/           instalação, uso, prompts e problemas comuns

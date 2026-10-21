@@ -1,6 +1,6 @@
 ---
 name: pack-edicao-ia
-description: Edita vídeo de YouTube, criativo (vertical) e VSL com HyperFrames usando o Pack de Edição IA — 23 animações prontas em pt-BR (uma em 3D) (prova de resultado, texto, transições, criativo) e 34 efeitos sonoros gerados por código. Use quando o usuário pedir pra editar um vídeo, colocar animações, motion, legenda, transição ou efeito sonoro num vídeo, ou montar criativo com o pack.
+description: Edita vídeo de YouTube, criativo (vertical) e VSL com HyperFrames usando o Pack de Edição IA — 27 animações prontas em pt-BR (uma em 3D) (prova de resultado, texto, transições, criativo) e 34 efeitos sonoros gerados por código. Use quando o usuário pedir pra editar um vídeo, colocar animações, motion, legenda, transição ou efeito sonoro num vídeo, ou montar criativo com o pack.
 ---
 
 # Pack de Edição IA
@@ -12,8 +12,8 @@ A pasta do pack tem esta estrutura (`PACK` = onde ela está):
 
 ```
 PACK/
-  compositions/   23 animações (.html), cada uma com variáveis
-  assets/sfx/     34 efeitos sonoros (.wav) + gerar_sons.py
+  compositions/   27 animações (.html), cada uma com variáveis
+  assets/sfx/     38 efeitos sonoros (.wav) + gerar_sons.py
   assets/brand.css  cores e fontes de TODAS as animações (mude aqui a identidade)
   assets/fonts/  assets/vendor/gsap.min.js
   index.html  exemplos/reel-vertical.html   exemplos de montagem (horizontal e 9:16)
@@ -75,7 +75,7 @@ No fim de cada edição pergunte: "Quer que eu salve o que aprendi nessa ediçã
 
 ---
 
-## As 23 peças
+## As 27 peças
 
 **Prova de resultado** (é o que mais segura quem roda tráfego)
 
@@ -108,6 +108,7 @@ No fim de cada edição pergunte: "Quer que eu salve o que aprendi nessa ediçã
 | `15-transicao-flash` | 0,9 s | 0,40 s | virada de assunto, revelação |
 | `16-transicao-cortina` | 0,95 s | 0,45 s | troca de etapa/bloco (`cor1`, `direcao`) |
 | `17-transicao-glitch` | 0,7 s | 0,30 s | erro, "deu ruim", antes × depois |
+| `27-transicao-obturador` | 0,95 s | 0,40–0,46 s (preto total) | "foto", print, prova, flash de câmera (`laminas`, `flash`) |
 
 Ex.: corte em 20,00 s com cortina → `data-start="19.55"`.
 
@@ -120,11 +121,18 @@ Ex.: corte em 20,00 s com cortina → `data-start="19.55"`.
 | `20-selo-oferta` | overlay | 4,5 s | preço de/por | `preco_de`, `preco_por`, `chamada`, `rodape` |
 | `21-antes-depois` | tela cheia | 5 s | comparação com divisória | `numero_antes/depois`, `imagem_antes/depois` |
 | `22-me-chama-na-dm` | overlay | 5 s | CTA de palavra-chave na DM | `arroba`, `palavra`, `chamada` |
+**Efeitos especiais 16:9**
+
+| Arquivo | Formato | Duração | Quando usar | Variáveis principais |
+|---|---|---|---|---|
+| `24-vidro-liquido` | overlay | 5 s | notificação estilo iOS 26: resultado, venda, mensagem. Montada no HyperFrames, desfoca o vídeo de trás de verdade | `app`, `titulo`, `texto`, `icone`, `posicao`, `tema` |
+| `25-particulas` | overlay | 4,6 s | número grande ou virada que se monta com partículas | `texto` (até ~14 letras), `subtexto`, `cor`, `saida` |
+| `26-jornal` | overlay | 4 s | manchete de jornal girando: prova social, resultado de aluno, notícia | `jornal`, `data`, `manchete`, `linha_fina`, `imagem` |
 | `23-explicativo-3d` | tela cheia | 14 s | modelo 3D gira, é cortado e etiqueta as regiões (veja a skill `explicativo-3d`) | `modelo`, `regioes`, `titulo`, `eixo_corte` |
 
 ---
 
-## Os 34 sons (`assets/sfx/`, todos nivelados no mesmo volume)
+## Os 38 sons (`assets/sfx/`, todos nivelados no mesmo volume)
 
 | Grupo | Arquivos | Use em |
 |---|---|---|
@@ -135,6 +143,7 @@ Ex.: corte em 20,00 s com cortina → `data-start="19.55"`.
 | Venda | `cha-ching` `moeda` `notificacao-venda` `sucesso` `vendas-em-sequencia` | prova de venda, resultado |
 | Glitch | `glitch-digital` `estatica` `stutter` `erro-buzz` | erro, prejuízo, "antes" |
 | UI | `swipe` `toggle` `zoom-in` `zoom-out` `flash-brilho` `check` | interface, zoom, item marcado |
+| Especiais | `obturador` `papel-giro` `brilho-particulas` `vidro-tilin` | câmera/foto, jornal girando, partículas, vidro |
 
 Som avulso no `index.html`:
 `<audio data-start="31.2" data-duration="0.55" src="assets/sfx/whoosh-curto.wav" data-volume="0.5"></audio>`

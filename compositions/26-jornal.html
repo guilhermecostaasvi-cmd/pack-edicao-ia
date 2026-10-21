@@ -1,0 +1,114 @@
+<!-- PACK EDIÇÃO IA · 26 manchete de jornal girando (overlay, fundo transparente)
+     Base: componentes "headline-slam" e "beat-accent" do catálogo HyperFrames (Apache-2.0).
+     O clássico "jornal rodando" com a sua manchete: prova social, notícia, resultado de aluno.
+     Em "imagem" você pode passar um print (caminho do arquivo); vazio = gráfico de exemplo. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"jornal","type":"string","label":"Nome do jornal","default":"O DIÁRIO DO TRÁFEGO"},
+  {"id":"data","type":"string","label":"Linha da edição","default":"EDIÇÃO EXTRA · QUARTA-FEIRA, 21 DE OUTUBRO DE 2026"},
+  {"id":"manchete","type":"string","label":"Manchete","default":"ALUNO FATURA R$ 100 MIL EM 30 DIAS COM TRÁFEGO DIRETO"},
+  {"id":"linha_fina","type":"string","label":"Linha fina","default":"Sem funil complicado: uma página, um criativo e um anúncio rodando todo dia"},
+  {"id":"imagem","type":"string","label":"Imagem da matéria (opcional)","default":""}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      #escuro { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.35), rgba(0,0,0,.8)); opacity: 0; }
+      #cam { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+      #folha { position: absolute; left: -430px; top: -520px; width: 860px; height: 1040px; padding: 34px 40px;
+        background: #f3eee2; color: #1a1712; font-family: "Playfair Display", Georgia, serif;
+        box-shadow: 0 40px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.08);
+        background-image:
+          radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
+          radial-gradient(ellipse at 90% 95%, rgba(120,95,50,.16), rgba(0,0,0,0) 60%),
+          repeating-linear-gradient(0deg, rgba(0,0,0,.018) 0 1px, rgba(0,0,0,0) 1px 3px); }
+      #topo { display: flex; justify-content: space-between; font-family: var(--pk-fonte); font-size: 14px; font-weight: 700; letter-spacing: .12em; border-bottom: 2px solid #1a1712; padding-bottom: 8px; }
+      #nome { text-align: center; font-weight: 900; font-size: 66px; white-space: nowrap; letter-spacing: -0.01em; line-height: 1; padding: 14px 0 10px; }
+      #edicao { text-align: center; font-family: var(--pk-fonte); font-size: 14px; font-weight: 600; letter-spacing: .14em; border-top: 1px solid #1a1712; border-bottom: 4px double #1a1712; padding: 7px 0; }
+      #manchete { font-weight: 900; font-size: 66px; line-height: 1.02; letter-spacing: -0.015em; margin-top: 26px; text-transform: uppercase; }
+      #fina { font-family: var(--pk-fonte); font-weight: 500; font-size: 24px; line-height: 1.3; color: #3b352b; margin-top: 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(0,0,0,.35); }
+      #corpo { display: grid; grid-template-columns: 1.25fr 1fr; gap: 26px; margin-top: 20px; }
+      #foto { height: 300px; background: #ddd5c4; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,.25);
+        background-image: radial-gradient(circle, rgba(0,0,0,.22) 1.2px, rgba(0,0,0,0) 1.6px); background-size: 6px 6px; }
+      #foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15); }
+      #foto svg { position: absolute; inset: 0; }
+      #legenda { font-family: var(--pk-fonte); font-size: 13px; color: #4a4336; margin-top: 6px; font-style: italic; }
+      .col { display: flex; flex-direction: column; gap: 9px; padding-top: 4px; }
+      .lin { height: 9px; background: rgba(26,23,18,.55); border-radius: 1px; }
+      .lin.c { width: 72%; }
+      #carimbo { position: absolute; left: 70px; bottom: 300px; padding: 8px 18px; border: 5px solid #c81e1e; color: #c81e1e; font-family: var(--pk-fonte);
+        font-weight: 900; font-size: 34px; letter-spacing: .06em; transform: rotate(-12deg); opacity: 0; mix-blend-mode: multiply; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="26-jornal" data-start="0" data-duration="4" data-width="1920" data-height="1080">
+      <div id="escuro"></div>
+      <div id="cam">
+        <div id="folha">
+          <div id="topo"><span>ANO XXVI · Nº 2.026</span><span>R$ 4,90</span></div>
+          <div id="nome"></div>
+          <div id="edicao"></div>
+          <div id="manchete"></div>
+          <div id="fina"></div>
+          <div id="corpo">
+            <div>
+              <div id="foto">
+                <svg viewBox="0 0 460 300" preserveAspectRatio="none">
+                  <polyline points="20,260 90,230 160,240 230,180 300,150 370,90 440,40" fill="none" stroke="#1a1712" stroke-width="7" stroke-linejoin="round" />
+                  <g fill="#1a1712" opacity=".75"><rect x="40" y="250" width="34" height="40"/><rect x="110" y="232" width="34" height="58"/><rect x="180" y="214" width="34" height="76"/><rect x="250" y="178" width="34" height="112"/><rect x="320" y="130" width="34" height="160"/><rect x="390" y="76" width="34" height="214"/></g>
+                </svg>
+              </div>
+              <div id="legenda">Faturamento diário do mês, em reais. Foto: divulgação</div>
+            </div>
+            <div class="col">
+              <div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin c"></div>
+              <div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin c"></div>
+              <div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin"></div><div class="lin c"></div>
+            </div>
+          </div>
+          <div id="carimbo">EXCLUSIVO</div>
+        </div>
+      </div>
+      <audio id="som26-1" data-start="0" data-duration="1.1" src="../assets/sfx/papel-giro.wav" data-volume="0.8"></audio>
+      <audio id="som26-2" data-start="1.05" data-duration="0.35" src="../assets/sfx/impacto-seco.wav" data-volume="0.8"></audio>
+      <audio id="som26-3" data-start="1.55" data-duration="1.2" src="../assets/sfx/slam-texto.wav" data-volume="0.45"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      $("#nome").textContent = v.jornal ?? "O DIÁRIO DO TRÁFEGO";
+      $("#edicao").textContent = v.data ?? "EDIÇÃO EXTRA · QUARTA-FEIRA, 21 DE OUTUBRO DE 2026";
+      $("#manchete").textContent = v.manchete ?? "ALUNO FATURA R$ 100 MIL EM 30 DIAS COM TRÁFEGO DIRETO";
+      $("#fina").textContent = v.linha_fina ?? "Sem funil complicado: uma página, um criativo e um anúncio rodando todo dia";
+      if (v.imagem) { const im = document.createElement("img"); im.src = v.imagem; $("#foto").innerHTML = ""; $("#foto").appendChild(im); }
+      // manchete longa: diminui a fonte pra caber em até 3 linhas
+      const n = ($("#manchete").textContent || "").length;
+      if (n > 60) $("#manchete").style.fontSize = Math.max(44, 66 - (n - 60) * 0.6) + "px";
+
+      gsap.set("#folha", { transformOrigin: "50% 50%" });
+      const tl = gsap.timeline({ paused: true });
+      tl.to("#escuro", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0);
+      // gira vindo do fundo e para seco de frente pra câmera
+      tl.fromTo("#cam", { scale: 0.04, rotation: -1080 }, { scale: 0.8, rotation: -3, duration: 1.1, ease: "power2.out" }, 0);
+      // tranco no impacto
+      tl.to("#cam", { scale: 0.84, duration: 0.07, ease: "power2.out" }, 1.1);
+      tl.to("#cam", { scale: 0.82, duration: 0.25, ease: "power2.inOut" }, 1.17);
+      tl.fromTo("#root", { x: 0 }, { keyframes: [{ x: -14, duration: 0.04 }, { x: 11, duration: 0.04 }, { x: -6, duration: 0.04 }, { x: 0, duration: 0.05 }] }, 1.1);
+      // carimbo
+      tl.fromTo("#carimbo", { opacity: 0, scale: 2.4 }, { opacity: 0.92, scale: 1, duration: 0.18, ease: "power3.in" }, 1.55);
+      // empurrão lento de câmera
+      tl.to("#cam", { scale: 0.88, rotation: -1.5, duration: 2.0, ease: "none" }, 1.42);
+      // saída
+      tl.to("#cam", { scale: 1.6, opacity: 0, duration: 0.35, ease: "power2.in" }, 3.65);
+      tl.to("#escuro", { opacity: 0, duration: 0.35 }, 3.65);
+      window.__timelines["26-jornal"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- PACK EDIÇÃO IA · demo dos 4 efeitos novos (16:9): vidro líquido por cima de um print,
+     transição obturador, texto em partículas e manchete de jornal.
+     Renderizar: npx hyperframes render -c exemplos/novos-efeitos.html -->
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, #1d1d26 0%, #0b0b0f 70%); }
+      .clip { position: absolute; inset: 0; }
+      .print { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="novos-efeitos" data-start="0" data-duration="13.8" data-width="1920" data-height="1080">
+      <!-- fundo: o print do painel (o vidro desfoca ele de verdade) -->
+      <img class="clip print" id="print-1" src="exemplos/fundo-demo.jpg" data-start="0" data-duration="5.05" data-track-index="0" />
+      <img class="clip print" id="print-2" src="exemplos/fundo-demo.jpg" data-start="9.65" data-duration="4.15" data-track-index="0" />
+
+      <div class="clip" id="cena-vidro" data-composition-id="24-vidro-liquido" data-composition-src="compositions/24-vidro-liquido.html" data-start="0" data-duration="5" data-width="1920" data-height="1080" data-track-index="1"
+           data-variable-values='{"posicao":"centro"}'></div>
+      <div class="clip" id="cena-particulas" data-composition-id="25-particulas" data-composition-src="compositions/25-particulas.html" data-start="5.05" data-duration="4.6" data-width="1920" data-height="1080" data-track-index="1"></div>
+      <div class="clip" id="cena-jornal" data-composition-id="26-jornal" data-composition-src="compositions/26-jornal.html" data-start="9.65" data-duration="4" data-width="1920" data-height="1080" data-track-index="1"></div>
+
+      <div class="clip" id="corte-1" data-composition-id="27-transicao-obturador" data-composition-src="compositions/27-transicao-obturador.html" data-start="4.62" data-duration="0.95" data-width="1920" data-height="1080" data-track-index="2"></div>
+      <div class="clip" id="corte-2" data-composition-id="27-transicao-obturador" data-composition-src="compositions/27-transicao-obturador.html" data-start="9.22" data-duration="0.95" data-width="1920" data-height="1080" data-track-index="2"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["novos-efeitos"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

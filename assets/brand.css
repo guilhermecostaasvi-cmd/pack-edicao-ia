@@ -39,3 +39,6 @@
   --pk-raio: 18px;
   --pk-sombra: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
+/* serifada de jornal (usada na animação 26) */
+@font-face { font-family: "Playfair Display"; font-weight: 700; src: url("fonts/playfair-display-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Playfair Display"; font-weight: 900; src: url("fonts/playfair-display-latin-900-normal.woff2") format("woff2"); }

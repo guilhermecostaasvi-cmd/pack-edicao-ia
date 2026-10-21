@@ -351,6 +351,43 @@ def ui():
     salvar("check", x)
 
 
+# --------------------------------------------------------- NOVOS (v1.2)
+def novos():
+    # obturador de câmera: clique de abrir + clique de fechar, com ruído mecânico
+    def clique(f, dur=0.035):
+        n = int(SR * dur)
+        return (0.7 * passa(ruido(dur), 3000, "high") + 0.5 * np.sin(2 * np.pi * f * t(dur))) * env_ad(n, 0.0005, 0.02, 6)
+    mec = passa(ruido(0.12, "rosa"), 1800) * env_ad(int(SR * 0.12), 0.002, 0.08, 4)
+    x = soma(clique(1900), 0.35 * mec, cola(silencio(0.075), clique(1400, 0.05)))
+    salvar("obturador", estereo(reverb(x, 0.35, 0.1), 0, 0, 0.3))
+
+    # jornal girando: papel farfalhando + vento que cresce e para seco
+    d = 1.1
+    farfalha = passa(ruido(d), 1500, "high") * (0.55 + 0.45 * np.abs(np.sin(2 * np.pi * 7 * t(d))))
+    vento = bandpass_varrendo(ruido(d, "rosa"), 300, 2500)
+    env = np.linspace(0.15, 1, int(SR * d)) ** 2
+    x = (0.6 * farfalha + vento) * env
+    x[-int(SR * 0.04):] *= np.linspace(1, 0, int(SR * 0.04))
+    salvar("papel-giro", estereo(x, -0.5, 0.2, 0.6))
+
+    # brilho de partículas: dezenas de "plins" agudos espalhados
+    d = 1.6
+    x = np.zeros(int(SR * d))
+    for i in range(46):
+        ini = int(SR * (0.02 + 1.2 * (i / 46) ** 0.8 + 0.03 * rng.random()))
+        f = 2200 + 3200 * rng.random()
+        s = np.sin(2 * np.pi * f * t(0.18)) * env_ad(int(SR * 0.18), 0.001, 0.12, 5) * (0.4 + 0.6 * rng.random())
+        x[ini:ini + len(s)] += s[: len(x) - ini]
+    x += 0.15 * passa(ruido(d), 7000, "high") * env_ad(int(SR * d), 0.3, 1.0, 3)
+    salvar("brilho-particulas", estereo(reverb(x, 0.9, 0.3), -0.5, 0.5, 1.0), -3)
+
+    # vidro: "tilin" cristalino + ar
+    x = soma(sino(3520, 1.0, ((1, 1), (2.32, 0.4), (4.25, 0.18)), 0.6),
+             0.5 * sino(5274, 0.8, ((1, 1), (2.1, 0.3)), 0.45),
+             0.12 * passa(ruido(0.4), 5000, "high") * env_ad(int(SR * 0.4), 0.05, 0.3, 4))
+    salvar("vidro-tilin", estereo(reverb(x, 1.0, 0.3), 0, 0, 0.8), -3)
+
+
 if __name__ == "__main__":
     whooshes()
     impactos()
@@ -359,4 +396,5 @@ if __name__ == "__main__":
     vendas()
     glitches()
     ui()
+    novos()
     print("pronto.")

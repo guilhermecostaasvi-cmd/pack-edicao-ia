@@ -1,0 +1,106 @@
+<!-- PACK EDIÇÃO IA · 24 notificação de vidro líquido, estilo iOS 26 (overlay, fundo transparente)
+     Base: blocos "liquid-glass-notification" e "liquid-glass-widgets" do catálogo HyperFrames (Apache-2.0).
+     Uma gota de vidro cai, estica e vira um cartão de vidro fosco com a sua mensagem.
+     Montada por cima do vídeo no HyperFrames, o vidro desfoca a imagem de trás de verdade.
+     No .webm transparente (CapCut/Premiere) o desfoque não vai junto, só o vidro claro. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"app","type":"string","label":"Nome do app","default":"Gerenciador de Anúncios"},
+  {"id":"quando","type":"string","label":"Quando","default":"agora"},
+  {"id":"titulo","type":"string","label":"Título","default":"Campanha escalada 🚀"},
+  {"id":"texto","type":"string","label":"Texto","default":"ROAS 3,2x · R$ 12.480 nas últimas 24h"},
+  {"id":"icone","type":"string","label":"Ícone (emoji ou letra)","default":"📈"},
+  {"id":"cor_icone","type":"color","label":"Cor do ícone","default":"#2563eb"},
+  {"id":"posicao","type":"string","label":"topo ou centro","default":"topo"},
+  {"id":"tema","type":"string","label":"escuro (lê bem em qualquer fundo) ou claro","default":"escuro"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte); }
+      #ancora { position: absolute; left: 960px; top: 70px; width: 0; height: 0; }
+      #vidro { position: absolute; left: 0; top: 0; width: 130px; height: 130px; border-radius: 65px; overflow: hidden;
+        background: var(--vidro);
+        -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.08); backdrop-filter: blur(26px) saturate(190%) brightness(1.08);
+        border: 1.5px solid rgba(255,255,255,.45);
+        box-shadow: inset 0 2px 1px rgba(255,255,255,.75), inset 0 -2px 2px rgba(255,255,255,.22), inset 0 0 36px rgba(255,255,255,.16),
+          inset 6px 0 14px rgba(255,120,220,.10), inset -6px 0 14px rgba(80,220,255,.12), 0 24px 60px rgba(0,0,0,.38), 0 2px 8px rgba(0,0,0,.2); }
+      #reflexo { position: absolute; top: -40%; bottom: -40%; width: 220px; left: 0;
+        background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55) 50%, rgba(255,255,255,0)); filter: blur(6px); opacity: .0; }
+      #conteudo { position: absolute; inset: 0; display: flex; align-items: center; gap: 28px; padding: 0 34px; opacity: 0; }
+      #icone { flex: none; width: 116px; height: 116px; border-radius: 28px; display: grid; place-items: center; font-size: 64px; color: #fff; font-weight: 900;
+        background: linear-gradient(160deg, color-mix(in srgb, var(--ci) 70%, #fff), var(--ci)); box-shadow: inset 0 2px 2px rgba(255,255,255,.5), 0 6px 16px rgba(0,0,0,.25); }
+      #txts { min-width: 0; flex: 1; }
+      #linha1 { display: flex; justify-content: space-between; gap: 20px; font-size: 24px; font-weight: 600; color: rgba(255,255,255,.82); text-transform: uppercase; letter-spacing: .06em; }
+      #titulo { margin-top: 6px; font-size: 44px; font-weight: 800; color: #fff; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      #texto { margin-top: 4px; font-size: 34px; font-weight: 500; color: rgba(255,255,255,.92); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      #txts, #icone { text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+      #root { --vidro: linear-gradient(135deg, rgba(255,255,255,.20), rgba(18,20,28,.42) 48%, rgba(255,255,255,.10)); }
+      #root.claro { --vidro: linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.38) 48%, rgba(255,255,255,.55)); }
+      #root.claro #linha1 { color: rgba(20,20,28,.62); }
+      #root.claro #titulo { color: #0f1015; }
+      #root.claro #texto { color: rgba(15,16,21,.82); }
+      #root.claro #txts { text-shadow: none; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="24-vidro-liquido" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="ancora">
+        <div id="vidro">
+          <div id="reflexo"></div>
+          <div id="conteudo">
+            <div id="icone"></div>
+            <div id="txts"><div id="linha1"><span id="app"></span><span id="quando"></span></div><div id="titulo"></div><div id="texto"></div></div>
+          </div>
+        </div>
+      </div>
+      <audio id="som24-1" data-start="0.05" data-duration="0.35" src="../assets/sfx/swoosh-agudo.wav" data-volume="0.35"></audio>
+      <audio id="som24-2" data-start="0.42" data-duration="1.6" src="../assets/sfx/vidro-tilin.wav" data-volume="0.55"></audio>
+      <audio id="som24-3" data-start="4.35" data-duration="0.45" src="../assets/sfx/whoosh-saida.wav" data-volume="0.35"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const v = (window.__hyperframes && window.__hyperframes.getVariables()) || {};
+      const $ = (s) => document.querySelector(s);
+      $("#app").textContent = v.app ?? "Gerenciador de Anúncios";
+      $("#quando").textContent = v.quando ?? "agora";
+      $("#titulo").textContent = v.titulo ?? "Campanha escalada 🚀";
+      $("#texto").textContent = v.texto ?? "ROAS 3,2x · R$ 12.480 nas últimas 24h";
+      $("#icone").textContent = v.icone ?? "📈";
+      $("#root").style.setProperty("--ci", v.cor_icone ?? "#2563eb");
+      if ((v.posicao ?? "topo") === "centro") $("#ancora").style.top = "410px";
+      if ((v.tema ?? "escuro") === "claro") $("#root").classList.add("claro");
+
+      const W = 1040, H = 196, G = 140;
+      // o cartão cresce a partir do centro: x = -largura/2
+      gsap.set("#vidro", { x: -G / 2, y: -G * 1.4, width: G, height: G, borderRadius: G / 2, transformOrigin: "50% 0%" });
+      const tl = gsap.timeline({ paused: true });
+      // 1) a gota cai e estica
+      tl.to("#vidro", { y: 0, duration: 0.38, ease: "power3.in" }, 0);
+      tl.to("#vidro", { scaleY: 1.18, scaleX: 0.86, duration: 0.3, ease: "power2.in" }, 0.08);
+      // 2) bate, achata e vira cartão (gelatina)
+      tl.to("#vidro", { scaleY: 0.82, scaleX: 1.12, duration: 0.09, ease: "power2.out" }, 0.38);
+      tl.to("#vidro", { width: W, x: -W / 2, height: H, borderRadius: 46, duration: 0.55, ease: "elastic.out(1, 0.55)" }, 0.42);
+      tl.to("#vidro", { scaleY: 1, scaleX: 1, duration: 0.6, ease: "elastic.out(1.1, 0.45)" }, 0.47);
+      // 3) conteúdo entra
+      tl.to("#conteudo", { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.62);
+      tl.fromTo("#icone", { scale: 0.4 }, { scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 0.62);
+      tl.fromTo("#txts", { x: 26 }, { x: 0, duration: 0.45, ease: "power3.out" }, 0.68);
+      // 4) reflexo de luz passando no vidro
+      tl.fromTo("#reflexo", { x: -260, opacity: 0 }, { x: W + 80, opacity: 1, duration: 0.9, ease: "power2.inOut" }, 1.15);
+      tl.to("#reflexo", { opacity: 0, duration: 0.2 }, 1.9);
+      // respiração leve parada
+      tl.to("#vidro", { scale: 1.012, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.1);
+      // 5) saída: encolhe de volta pra gota e sobe
+      tl.to("#conteudo", { opacity: 0, duration: 0.18 }, 4.3);
+      tl.to("#vidro", { width: G, x: -G / 2, height: G, borderRadius: G / 2, duration: 0.32, ease: "power3.in" }, 4.32);
+      tl.to("#vidro", { y: -G * 1.6, scaleY: 1.2, scaleX: 0.85, duration: 0.3, ease: "power3.in" }, 4.6);
+      window.__timelines["24-vidro-liquido"] = tl;
+    </script>
+  </body>
+</html>
