@@ -1,6 +1,6 @@
 # 🎬 Pack de Edição IA
 
-**22 animações + 34 efeitos sonoros + 4 skills pro Claude.**
+**22 animações + 34 efeitos sonoros + 4 skills próprias + 5 skills extras de outros criadores.**
 Edite vídeo de YouTube, criativo de anúncio e VSL com o Claude (Opus 5.5) + HyperFrames, sem abrir editor.
 
 Tudo em português e em R$, pensado pra quem roda tráfego: prova de venda, ROI, print de gerenciador,
@@ -22,6 +22,7 @@ gancho de criativo, selo de oferta.
 | 2 | [Como usar: 3 jeitos](docs/02-como-usar.md) | 2 min de leitura |
 | 3 | [Prompts prontos: a esteira completa](docs/03-prompts-prontos.md) | copiar e colar |
 | — | [Problemas comuns](docs/04-problemas-comuns.md) | quando travar |
+| — | [Mais ferramentas](docs/05-mais-ferramentas.md) | pra ir além |
 
 **Sem tempo pra instalar nada?** Baixe o repositório (botão verde **Code → Download ZIP**),
 abra a pasta `renders/` e arraste os `.webm` (fundo transparente) pro seu CapCut ou Premiere.
@@ -72,6 +73,20 @@ Pode usar em vídeo, criativo e anúncio.
 | **criativo-vertical** | transforma uma gravação em vários criativos 9:16 com variações de gancho |
 | **identidade-visual** | deixa todas as animações com as suas cores e a sua fonte |
 
+### 🧰 Extras: skills de outros criadores (`extras/`)
+
+Skills open source (licença MIT) que combinam com o Pack, copiadas com o crédito de cada autor:
+
+| Skill | O que faz | Autor |
+|---|---|---|
+| **cut-video** | decupagem fina: corta "é…", muleta e começo errado | Louise de Sadeleer |
+| **clipify** | acha os melhores momentos e transforma em cortes 9:16 com legenda | Louise de Sadeleer |
+| **add-zooms** | zoom de impacto nas palavras fortes | Louise de Sadeleer |
+| **freecut** | edição completa por conversa, sem chave paga | Moh4696 / Browser Use |
+| **motion-graphics** | 6 skills: b-roll animado, separar do fundo, explainers, sons | Bart |
+
+Detalhes, links originais e como instalar: [`extras/README.md`](extras/README.md).
+
 ---
 
 ## ⚠️ Regras de ouro
@@ -90,7 +105,8 @@ Pode usar em vídeo, criativo e anúncio.
 ```
 compositions/   as 22 animações (HTML + GSAP), cada uma com variáveis
 assets/         brand.css (sua identidade), fontes, GSAP e os 34 sons
-skills/         as 4 skills pro Claude
+skills/         as 4 skills do Pack
+extras/         5 skills de outros criadores (MIT, com crédito)
 docs/           instalação, uso, prompts e problemas comuns
 renders/        prévias MP4, overlays WebM transparentes, showreels e o MP3 dos sons
 index.html      exemplo de montagem horizontal (showreel)
@@ -106,5 +122,6 @@ exemplos/       exemplo de montagem vertical 9:16
 - Fontes Poppins, JetBrains Mono e Caveat: SIL Open Font License (`assets/fonts/`).
 - GSAP: licença padrão gratuita da GreenSock/Webflow.
 - Sons: gerados por síntese pelo script incluso.
+- `extras/`: cada pasta mantém o `LICENSE` (MIT) e o crédito do autor original.
 
 Feito por **[@guilhermeasvi](https://instagram.com/guilhermeasvi)** · YouTube: Guilherme Asvi

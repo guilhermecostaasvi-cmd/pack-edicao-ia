@@ -38,3 +38,15 @@ Outros componentes de terceiros:
 
 Os efeitos sonoros em `assets/sfx/` são sintetizados pelo script `gerar_sons.py` incluso e não
 contêm gravações de terceiros.
+
+## Extras de terceiros (`extras/`)
+
+Cópias sem modificação, sob a licença MIT de cada autor (o `LICENSE` original está em cada pasta):
+
+| Pasta | Origem | Versão (commit) |
+|---|---|---|
+| extras/cut-video | github.com/louisedesadeleer/cut-video — © 2026 Louise de Sadeleer | a5a87a6 |
+| extras/clipify | github.com/louisedesadeleer/clipify — © 2026 Louise de Sadeleer | 5f6b75e |
+| extras/add-zooms | github.com/louisedesadeleer/add-zooms — © 2026 Louise de Sadeleer | 34db910 |
+| extras/freecut | github.com/Moh4696/freecut — © 2026 Browser Use | f1d4334 |
+| extras/motion-graphics | github.com/Barty-Bart/motion-graphics (pasta skills/) — © 2026 Bart | 3d83d98 |
