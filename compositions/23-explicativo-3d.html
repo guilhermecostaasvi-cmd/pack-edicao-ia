@@ -1,0 +1,294 @@
+<!-- PACK EDIÇÃO IA · 23 explicativo 3D: o modelo gira, é cortado no meio e cada região ganha cor e etiqueta
+     Base: bloco "product-turntable" do catálogo HyperFrames (Apache-2.0) + three.js (MIT).
+     Modelo padrão: coração do Z-Anatomy (CC BY-SA 4.0). Se usar no vídeo, coloque na descrição:
+     "Modelo 3D: BodyParts3D/DBCLS (CC BY-SA 2.1 JP) · Z-Anatomy (CC BY-SA 4.0)".
+     Serve pra QUALQUER .glb que tenha as partes separadas por nome (órgão, motor, produto, prédio...).
+     Em "regioes", o campo "parte" é o começo do nome da peça dentro do .glb. -->
+<!doctype html>
+<html lang="pt-BR" data-composition-variables='[
+  {"id":"modelo","type":"string","label":"Arquivo .glb","default":"../assets/modelos/coracao.glb"},
+  {"id":"titulo","type":"string","label":"Título","default":"POR DENTRO DO CORAÇÃO"},
+  {"id":"subtitulo","type":"string","label":"Subtítulo","default":"as 4 câmaras e as saídas do sangue"},
+  {"id":"regioes","type":"string","label":"Regiões (JSON: parte, nome, info, cor)","default":"[{\"parte\":\"Right atrium\",\"nome\":\"Átrio direito\",\"info\":\"recebe o sangue do corpo\",\"cor\":\"#60a5fa\"},{\"parte\":\"Right ventricle\",\"nome\":\"Ventrículo direito\",\"info\":\"manda o sangue pro pulmão\",\"cor\":\"#2563eb\"},{\"parte\":\"Left atrium\",\"nome\":\"Átrio esquerdo\",\"info\":\"recebe o sangue já oxigenado\",\"cor\":\"#fb7185\"},{\"parte\":\"Left ventricle\",\"nome\":\"Ventrículo esquerdo\",\"info\":\"bombeia pro corpo inteiro\",\"cor\":\"#e11d48\"},{\"parte\":\"Ascending aorta\",\"nome\":\"Aorta\",\"info\":\"a maior artéria do corpo\",\"cor\":\"#f97316\"},{\"parte\":\"Pulmonary trunk\",\"nome\":\"Tronco pulmonar\",\"info\":\"leva o sangue pro pulmão\",\"cor\":\"#a78bfa\"}]"},
+  {"id":"pecas_claras","type":"string","label":"Peças em cor clara (começo do nome, separado por vírgula)","default":"leaflet,papillary"},
+  {"id":"cor_base","type":"color","label":"Cor do modelo antes do corte","default":"#a3312c"},
+  {"id":"fundo","type":"color","label":"Fundo","default":"#0b0b0f"},
+  {"id":"eixo_corte","type":"string","label":"Corte: frente (separa frente/trás) ou lado (esquerda/direita)","default":"frente"}
+]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../assets/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="../assets/brand.css" />
+    <script src="../assets/vendor/three/three-pack.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0b0b0f; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--pk-fonte);
+        background: radial-gradient(900px 700px at 55% 52%, rgba(255,255,255,.07), rgba(0,0,0,0) 70%), var(--fundo, #0b0b0f); }
+      #grade { position: absolute; inset: 0; opacity: .5;
+        background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+        background-size: 60px 60px; }
+      #tela3d { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+      #linhas { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+      #cab { position: absolute; left: 96px; top: 76px; }
+      #titulo { font-weight: 900; font-size: 64px; letter-spacing: -0.02em; color: #fff; line-height: 1; }
+      #subtitulo { margin-top: 14px; font-weight: 500; font-size: 30px; color: rgba(255,255,255,.62); }
+      #barra { margin-top: 22px; height: 6px; width: 140px; background: var(--pk-acento); border-radius: 3px; transform-origin: 0 50%; }
+      .rot { position: absolute; top: 0; left: 0; width: 430px; opacity: 0; }
+      .rot .nome { display: flex; align-items: center; gap: 14px; font-weight: 800; font-size: 34px; color: #fff; line-height: 1.05; }
+      .rot .bola { width: 22px; height: 22px; border-radius: 50%; flex: none; box-shadow: 0 0 0 5px rgba(255,255,255,.08); }
+      .rot .info { margin-top: 6px; padding-left: 36px; font-weight: 500; font-size: 23px; color: rgba(255,255,255,.66); line-height: 1.2; }
+      .rot.dir { text-align: left; }
+      .rot.esq { text-align: right; }
+      .rot.esq .nome { flex-direction: row-reverse; }
+      .rot.esq .info { padding-left: 0; padding-right: 36px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="23-explicativo-3d" data-start="0" data-duration="14" data-width="1920" data-height="1080">
+      <div id="grade"></div>
+      <canvas id="tela3d" class="clip" data-start="0" data-duration="14" data-track-index="1"></canvas>
+      <svg id="linhas" viewBox="0 0 1920 1080"></svg>
+      <div id="rotulos"></div>
+      <div id="cab"><div id="titulo"></div><div id="subtitulo"></div><div id="barra"></div></div>
+      <audio id="som23-1" data-start="0.1" data-duration="1.2" src="../assets/sfx/whoosh-longo.wav" data-volume="0.35"></audio>
+      <audio id="som23-2" data-start="2.55" data-duration="0.9" src="../assets/sfx/swoosh-agudo.wav" data-volume="0.6"></audio>
+      <audio id="som23-3" data-start="3.3" data-duration="1.3" src="../assets/sfx/whoosh-grave.wav" data-volume="0.6"></audio>
+      <audio id="som23-4" data-start="5.0" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+      <audio id="som23-5" data-start="6.15" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+      <audio id="som23-6" data-start="7.3" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+      <audio id="som23-7" data-start="8.45" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+      <audio id="som23-8" data-start="9.6" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+      <audio id="som23-9" data-start="10.75" data-duration="0.4" src="../assets/sfx/pop.wav" data-volume="0.45"></audio>
+    </div>
+
+    <script>
+      // relógio único: todo quadro é render(t). Funciona com o render pulando pra qualquer tempo.
+      (function () {
+        const html = document.documentElement, defs = {};
+        try { JSON.parse(html.getAttribute("data-composition-variables") || "[]").forEach((v) => (defs[v.id] = v.default)); } catch (e) {}
+        const esc = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        const V = Object.assign({}, defs, window.__hfVariables || {}, esc);
+        const root = document.querySelector("#root");
+        const D = Math.max(1, parseFloat(root.dataset.duration) || 14);
+        root.style.setProperty("--fundo", V.fundo || "#0b0b0f");
+        document.querySelector("#titulo").textContent = V.titulo || "";
+        document.querySelector("#subtitulo").textContent = V.subtitulo || "";
+        const clock = { t: 0 };
+        const cena = { V, D, clock, render: null };
+        window.__explicativo3d = cena;
+        window.__hf = window.__hf || {};
+        window.__hf.buildReady = window.__hf.buildReady || {};
+        window.__hf.buildReady["23-explicativo-3d"] = new Promise((r) => (cena.ready = r));
+        const tl = gsap.timeline({ paused: true });
+        tl.to(clock, { t: D, duration: D, ease: "none", onUpdate: () => cena.render && cena.render(clock.t) }, 0);
+        tl.fromTo("#cab", { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.2);
+        tl.fromTo("#barra", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 0.45);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["23-explicativo-3d"] = tl;
+      })();
+    </script>
+
+    <script>
+     (async function () {
+      const THREE = window.THREE, { GLTFLoader, RoomEnvironment } = window.THREE;
+
+      const host = window.__explicativo3d, V = host.V;
+      let REG = [];
+      try { REG = JSON.parse(V.regioes || "[]"); } catch (e) { REG = []; }
+      const CLARAS = String(V.pecas_claras || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+      const LADO = String(V.eixo_corte || "frente") === "lado";
+
+      // tempos (segundos)
+      const T_CORTE = 2.6, T_ABRE = 3.3, T_REG = 5.0, PASSO = 1.15;
+
+      const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("#tela3d"), antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setPixelRatio(1);
+      renderer.setSize(1920, 1080, false);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.NeutralToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      renderer.localClippingEnabled = true;
+
+      const scene = new THREE.Scene();
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-3, 4, 5); scene.add(key);
+      const rim = new THREE.DirectionalLight(0xffe2d6, 2.6); rim.position.set(4, 2, -4); scene.add(rim);
+
+      const camera = new THREE.PerspectiveCamera(30, 1920 / 1080, 0.1, 100);
+
+      // carrega e normaliza o modelo: centro na origem, maior lado = 2.6
+      const gltf = await new GLTFLoader().loadAsync(V.modelo);
+      const base = gltf.scene;
+      const box = new THREE.Box3().setFromObject(base);
+      const size = box.getSize(new THREE.Vector3()), ctr = box.getCenter(new THREE.Vector3());
+      const S = 2.35 / Math.max(size.x, size.y, size.z);
+      base.position.copy(ctr).multiplyScalar(-S);
+      base.scale.setScalar(S);
+      const modelo = new THREE.Group(); modelo.add(base);
+
+      // material com o lado de dentro mais escuro (parece cavidade quando corta)
+      function material(cor) {
+        const m = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(cor), roughness: 0.48, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.35, side: THREE.DoubleSide });
+        m.onBeforeCompile = (sh) => {
+          sh.fragmentShader = sh.fragmentShader.replace("#include <color_fragment>", "#include <color_fragment>\n if (!gl_FrontFacing) diffuseColor.rgb *= 0.42;");
+        };
+        return m;
+      }
+      const nomeDe = (o) => String(o.name || "").replace(/_/g, " ").replace(/[ .]\d+$/, "").trim();
+      const regiaoDe = (nome) => REG.findIndex((r) => nome.toLowerCase().startsWith(String(r.parte).toLowerCase()));
+      const clara = (nome) => CLARAS.some((c) => nome.toLowerCase().includes(c));
+
+      // duas cópias: metade A (fica e ganha as etiquetas) e metade B (sai de cena)
+      const planoA = new THREE.Plane(), planoB = new THREE.Plane();
+      const normal = LADO ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+      function metade(plano) {
+        const g = modelo.clone(true);
+        const pecas = [];
+        g.traverse((o) => {
+          if (!o.isMesh) return;
+          const n = nomeDe(o);
+          const ri = regiaoDe(n);
+          const m = material(clara(n) ? "#efe2d2" : V.cor_base || "#a3312c");
+          m.clippingPlanes = [plano];
+          o.material = m;
+          pecas.push({ o, m, ri, clara: clara(n), baseCor: m.color.clone() });
+        });
+        const pivo = new THREE.Group(); pivo.add(g); scene.add(pivo);
+        return { pivo, pecas };
+      }
+      const A = metade(planoA), B = metade(planoB);
+
+      // laser do corte: uma lâmina de luz que desce e "fatia" o modelo
+      const cv = document.createElement("canvas"); cv.width = 256; cv.height = 256;
+      const cx2 = cv.getContext("2d");
+      const gr = cx2.createRadialGradient(128, 128, 10, 128, 128, 128);
+      gr.addColorStop(0, "rgba(255,210,63,0.55)"); gr.addColorStop(0.6, "rgba(255,210,63,0.18)"); gr.addColorStop(1, "rgba(255,210,63,0)");
+      cx2.fillStyle = gr; cx2.fillRect(0, 0, 256, 256);
+      const laser = new THREE.Group();
+      const lamina = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+      const fio = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.018, 0.018), new THREE.MeshBasicMaterial({ color: 0xfff3b0, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      laser.add(lamina, fio);
+      scene.add(laser);
+
+      // âncora de cada região: centro das peças daquela região (na metade A)
+      scene.updateMatrixWorld(true);
+      const ancora = REG.map((_, i) => {
+        const bb = new THREE.Box3();
+        A.pecas.filter((p) => p.ri === i).forEach((p) => bb.expandByObject(p.o));
+        return bb.isEmpty() ? null : bb;
+      });
+
+      // etiquetas
+      const svg = document.querySelector("#linhas"), caixa = document.querySelector("#rotulos");
+      const ROT = REG.map((r, i) => {
+        const d = document.createElement("div");
+        d.className = "rot";
+        d.innerHTML = `<div class="nome"><span class="bola"></span><span></span></div><div class="info"></div>`;
+        d.querySelector(".bola").style.background = r.cor || "#ffd23f";
+        d.querySelector(".nome span:last-child").textContent = r.nome || "";
+        d.querySelector(".info").textContent = r.info || "";
+        caixa.appendChild(d);
+        const ln = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        ln.setAttribute("fill", "none"); ln.setAttribute("stroke", r.cor || "#ffd23f"); ln.setAttribute("stroke-width", "3"); ln.setAttribute("stroke-linecap", "round");
+        const pt = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        pt.setAttribute("r", "8"); pt.setAttribute("fill", "#fff"); pt.setAttribute("stroke", r.cor || "#ffd23f"); pt.setAttribute("stroke-width", "4");
+        svg.appendChild(ln); svg.appendChild(pt);
+        return { d, ln, pt, cor: new THREE.Color(r.cor || "#ffd23f") };
+      });
+
+      const cl = (x) => Math.min(1, Math.max(0, x));
+      const ease = (x) => { x = cl(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+      const out = (x) => 1 - Math.pow(1 - cl(x), 3);
+      const back = (x) => { x = cl(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+      const tmp = new THREE.Vector3();
+      const tela = (v) => { tmp.copy(v).project(camera); return { x: (tmp.x + 1) * 960, y: (1 - tmp.y) * 540 }; };
+
+      host.render = (t) => {
+        // 1) entrada: gira e assenta
+        const giro = -0.95 * (1 - ease(t / 2.4)) + 0.12 * Math.sin(t * 0.55);
+        const abre = ease((t - T_ABRE) / 1.4);
+        const foco = ease((t - T_ABRE - 0.4) / 1.6);
+        // câmera: aproxima um pouco depois que abre
+        camera.position.set(0.25 * foco, 0.1, 7.4 - 0.7 * foco);
+        camera.lookAt(0.5 * foco, 0.12, 0);
+
+        A.pivo.rotation.set(0.05, giro, 0);
+        B.pivo.rotation.set(0.05, giro - 1.3 * abre, 0);
+        A.pivo.position.set(0.55 * foco, 0, 0);
+        B.pivo.position.set(-5.2 * abre, 0.4 * abre, 1.2 * abre);
+        scene.updateMatrixWorld(true);
+
+        // planos de corte presos em cada metade (antes do corte, as duas metades se completam = modelo inteiro)
+        const nA = normal.clone().negate(), nB = normal.clone();
+        planoA.setFromNormalAndCoplanarPoint(nA, new THREE.Vector3()).applyMatrix4(A.pivo.matrixWorld);
+        planoB.setFromNormalAndCoplanarPoint(nB, new THREE.Vector3()).applyMatrix4(B.pivo.matrixWorld);
+        const someB = cl((t - T_ABRE - 0.6) / 0.8);
+        B.pecas.forEach((p) => { p.m.transparent = someB > 0; p.m.opacity = 1 - someB; });
+        B.pivo.visible = someB < 1;
+
+        // 2) laser varre o modelo no plano do corte
+        const lz = (t - T_CORTE) / 0.75;
+        const brilho = lz > 0 && lz < 1.3 ? Math.sin(Math.PI * cl(lz / 1.3)) : 0;
+        const desce = ease(lz), topo = 1.5, yFio = topo - 3.0 * desce;
+        laser.position.copy(A.pivo.position);
+        laser.rotation.set(0.05, giro + (LADO ? Math.PI / 2 : 0), 0);
+        lamina.scale.set(1, Math.max(0.001, topo - yFio), 1);
+        lamina.position.y = (topo + yFio) / 2;
+        lamina.material.opacity = 0.9 * brilho;
+        fio.position.y = yFio;
+        fio.material.opacity = brilho;
+
+        // 3) regiões: cada uma acende na vez dela, as outras ficam apagadas
+        const atual = Math.floor((t - T_REG) / PASSO);
+        A.pecas.forEach((p) => {
+          if (p.clara) return;
+          let c = p.baseCor.clone();
+          if (p.ri >= 0) {
+            const k = out((t - (T_REG + p.ri * PASSO)) / 0.45);
+            c.lerp(ROT[p.ri].cor, k);
+            if (k > 0 && atual >= 0 && atual < REG.length && atual !== p.ri) c.multiplyScalar(0.62);
+          } else if (t > T_REG) c.multiplyScalar(0.55 + 0.45 * (1 - cl((t - T_REG) / 0.5)));
+          p.m.color.copy(c);
+          p.m.emissive.copy(p.ri === atual && p.ri >= 0 ? ROT[p.ri].cor : new THREE.Color(0)).multiplyScalar(p.ri === atual ? 0.16 : 0);
+        });
+
+        // etiquetas: cada uma vai pro lado em que a peça aparece, empilhadas sem encostar
+        const pos = ancora.map((bb) => (bb ? tela(bb.getCenter(new THREE.Vector3()).applyMatrix4(A.pivo.matrixWorld)) : null));
+        const cx = tela(A.pivo.position).x;
+        const lados = { esq: [], dir: [] };
+        pos.forEach((p, i) => { if (p) (p.x < cx ? lados.esq : lados.dir).push(i); });
+        const yAlvo = {};
+        for (const k of ["esq", "dir"]) {
+          const ord = lados[k].sort((a, b) => pos[a].y - pos[b].y);
+          let ultimo = 290;
+          ord.forEach((i) => { const y = Math.max(pos[i].y - 40, ultimo); yAlvo[i] = Math.min(y, 1080 - 130); ultimo = yAlvo[i] + 118; });
+        }
+        renderer.render(scene, camera);
+        ROT.forEach((r, i) => {
+          const p = pos[i];
+          const k = cl((t - (T_REG + i * PASSO)) / 0.35);
+          if (!p || k <= 0) { r.d.style.opacity = 0; r.ln.setAttribute("d", ""); r.pt.setAttribute("opacity", 0); return; }
+          const esq = lados.esq.includes(i);
+          const xr = esq ? 150 : 1920 - 150 - 430;
+          const y = yAlvo[i];
+          r.d.className = "rot " + (esq ? "esq" : "dir");
+          r.d.style.opacity = k;
+          r.d.style.transform = `translate(${xr + (esq ? -30 : 30) * (1 - back(k))}px, ${y}px)`;
+          const xa = esq ? xr + 430 + 16 : xr - 16, ya = y + 20;
+          const lk = out((t - (T_REG + i * PASSO)) / 0.5);
+          const xm = xa + (esq ? 70 : -70);
+          const xe = xm + (p.x - xm) * lk, ye = ya + (p.y - ya) * lk;
+          r.ln.setAttribute("d", `M${xa},${ya} L${xm},${ya} L${xe},${ye}`);
+          r.ln.setAttribute("opacity", k);
+          r.pt.setAttribute("cx", xe); r.pt.setAttribute("cy", ye); r.pt.setAttribute("opacity", lk);
+        });
+      };
+      host.render(host.clock.t);
+      host.ready();
+     })();
+    </script>
+  </body>
+</html>

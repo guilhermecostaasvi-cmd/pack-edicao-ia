@@ -31,9 +31,12 @@ identidade visual própria, sons). O cabeçalho de cada arquivo indica o bloco d
 | 20-selo-oferta | strikethrough-replace, spring-pop, number-wheel |
 | 21-antes-depois | comparison-split, before-after-wipe |
 | 22-me-chama-na-dm | instagram-follow, message-thread-reveal |
+| 23-explicativo-3d | product-turntable (estrutura de render seek-safe com three.js) |
 
 Outros componentes de terceiros:
 - `assets/vendor/gsap.min.js` — GSAP 3.14.2, GreenSock/Webflow, licença padrão "no charge" (https://gsap.com/standard-license).
+- `assets/vendor/three/three-pack.min.js` — three.js r184 (MIT, © three.js authors) com GLTFLoader e RoomEnvironment, empacotados num arquivo só. Licença em `assets/vendor/three/LICENSE`.
+- `assets/modelos/coracao.glb` — derivado do Z-Anatomy (https://github.com/Z-Anatomy/Models-of-human-anatomy), © Z-Anatomy, que por sua vez deriva do BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 Japão); **CC BY-SA 4.0** (https://creativecommons.org/licenses/by-sa/4.0/). Alterações: só as peças do coração e grandes vasos, convertidas de .blend para .glb, sem materiais. Este arquivo derivado segue sob a mesma licença CC BY-SA 4.0. Veja `assets/modelos/LICENCA-MODELOS.md`.
 - `assets/fonts/` — Poppins e JetBrains Mono (SIL OFL 1.1, arquivos de licença inclusos); Caveat (SIL OFL 1.1).
 
 Os efeitos sonoros em `assets/sfx/` são sintetizados pelo script `gerar_sons.py` incluso e não
@@ -50,3 +53,4 @@ Cópias sem modificação, sob a licença MIT de cada autor (o `LICENSE` origina
 | extras/add-zooms | github.com/louisedesadeleer/add-zooms — © 2026 Louise de Sadeleer | 34db910 |
 | extras/freecut | github.com/Moh4696/freecut — © 2026 Browser Use | f1d4334 |
 | extras/motion-graphics | github.com/Barty-Bart/motion-graphics (pasta skills/) — © 2026 Bart | 3d83d98 |
+| extras/threejs-skills | github.com/cloudai-x/threejs-skills — © 2026 CloudAI-X | 0e18186 |

@@ -1,6 +1,6 @@
 # 🎬 Pack de Edição IA
 
-**22 animações + 34 efeitos sonoros + 4 skills próprias + 5 skills extras de outros criadores.**
+**23 animações (1 em 3D) + 34 efeitos sonoros + 5 skills próprias + 6 skills extras de outros criadores.**
 Edite vídeo de YouTube, criativo de anúncio e VSL com o Claude (Opus 5.5) + HyperFrames, sem abrir editor.
 
 Tudo em português e em R$, pensado pra quem roda tráfego: prova de venda, ROI, print de gerenciador,
@@ -23,6 +23,7 @@ gancho de criativo, selo de oferta.
 | 3 | [Prompts prontos: a esteira completa](docs/03-prompts-prontos.md) | copiar e colar |
 | — | [Problemas comuns](docs/04-problemas-comuns.md) | quando travar |
 | — | [Mais ferramentas](docs/05-mais-ferramentas.md) | pra ir além |
+| — | [Animações 3D explicativas](docs/06-animacoes-3d.md) | órgão, peça ou produto cortado no meio |
 
 **Sem tempo pra instalar nada?** Baixe o repositório (botão verde **Code → Download ZIP**),
 abra a pasta `renders/` e arraste os `.webm` (fundo transparente) pro seu CapCut ou Premiere.
@@ -31,7 +32,7 @@ abra a pasta `renders/` e arraste os `.webm` (fundo transparente) pro seu CapCut
 
 ## 📦 O que tem dentro
 
-### 22 animações (`compositions/`)
+### 23 animações (`compositions/`)
 
 Cada uma é editável: texto, valor, cor. Você pede em português e o Claude gera com os seus números.
 
@@ -53,6 +54,10 @@ Cada uma é editável: texto, valor, cor. Você pede em português e o Claude ge
 | | | | 21 | Antes × depois com divisória |
 | | | | 22 | CTA "me chama na DM" |
 
+| # | 3D explicativo |
+|---|---|
+| 23 | Modelo 3D que gira, é cortado no meio e mostra cada região com cor e etiqueta. Vem com um coração anatômico real. [Guia](docs/06-animacoes-3d.md) |
+
 Prévia de cada uma em `renders/` (MP4) e versão com fundo transparente (WebM) nas que são overlay.
 
 ### 34 efeitos sonoros (`assets/sfx/`)
@@ -64,7 +69,7 @@ Ouça todos em sequência: `renders/ouvir-todos-os-sons.mp3`.
 **Gerados por código** (`assets/sfx/gerar_sons.py`): nenhum arquivo de banco de som de terceiro.
 Pode usar em vídeo, criativo e anúncio.
 
-### 4 skills pro Claude (`skills/`)
+### 5 skills pro Claude (`skills/`)
 
 | Skill | O que faz |
 |---|---|
@@ -72,6 +77,7 @@ Pode usar em vídeo, criativo e anúncio.
 | **decupagem** | corta silêncio, respiração e tomada repetida. Script incluso, sem API paga |
 | **criativo-vertical** | transforma uma gravação em vários criativos 9:16 com variações de gancho |
 | **identidade-visual** | deixa todas as animações com as suas cores e a sua fonte |
+| **explicativo-3d** | monta cena 3D explicativa com qualquer modelo .glb; inclui script pra tirar órgãos do atlas grátis Z-Anatomy |
 
 ### 🧰 Extras: skills de outros criadores (`extras/`)
 
@@ -84,6 +90,7 @@ Skills open source (licença MIT) que combinam com o Pack, copiadas com o crédi
 | **add-zooms** | zoom de impacto nas palavras fortes | Louise de Sadeleer |
 | **freecut** | edição completa por conversa, sem chave paga | Moh4696 / Browser Use |
 | **motion-graphics** | 6 skills: b-roll animado, separar do fundo, explainers, sons | Bart |
+| **threejs-skills** | 13 skills de three.js, o motor 3D: luz, material, câmera, animação | CloudAI-X |
 
 Detalhes, links originais e como instalar: [`extras/README.md`](extras/README.md).
 
@@ -103,10 +110,10 @@ Detalhes, links originais e como instalar: [`extras/README.md`](extras/README.md
 ## 📁 Estrutura
 
 ```
-compositions/   as 22 animações (HTML + GSAP), cada uma com variáveis
-assets/         brand.css (sua identidade), fontes, GSAP e os 34 sons
-skills/         as 4 skills do Pack
-extras/         5 skills de outros criadores (MIT, com crédito)
+compositions/   as 23 animações (HTML + GSAP; a 23 usa three.js), cada uma com variáveis
+assets/         brand.css (sua identidade), fontes, GSAP, three.js, modelos 3D e os 34 sons
+skills/         as 5 skills do Pack
+extras/         6 pacotes de skills de outros criadores (MIT, com crédito)
 docs/           instalação, uso, prompts e problemas comuns
 renders/        prévias MP4, overlays WebM transparentes, showreels e o MP3 dos sons
 index.html      exemplo de montagem horizontal (showreel)
@@ -122,6 +129,8 @@ exemplos/       exemplo de montagem vertical 9:16
 - Fontes Poppins, JetBrains Mono e Caveat: SIL Open Font License (`assets/fonts/`).
 - GSAP: licença padrão gratuita da GreenSock/Webflow.
 - Sons: gerados por síntese pelo script incluso.
+- three.js (MIT) em `assets/vendor/three/`.
+- Modelo `assets/modelos/coracao.glb`: derivado do **[Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy)**, licença CC BY-SA 4.0. Se usar no vídeo, dê o crédito na descrição.
 - `extras/`: cada pasta mantém o `LICENSE` (MIT) e o crédito do autor original.
 
 Feito por **[@guilhermeasvi](https://instagram.com/guilhermeasvi)** · YouTube: Guilherme Asvi

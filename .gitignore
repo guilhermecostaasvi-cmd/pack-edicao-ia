@@ -4,3 +4,4 @@ renders/.hf-segments/
 *.log
 .DS_Store
 Thumbs.db
+_t3d/

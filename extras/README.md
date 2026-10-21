@@ -10,13 +10,14 @@ Copiadas aqui com a licença original (todas **MIT**), pra você baixar tudo num
 | [`clipify`](clipify) | Acha os melhores momentos de um vídeo longo, corta, passa pra 9:16 e coloca legenda palavra por palavra | Louise de Sadeleer · [louisedesadeleer/clipify](https://github.com/louisedesadeleer/clipify) | idem |
 | [`add-zooms`](add-zooms) | Coloca zoom de impacto nas palavras fortes e "Ken Burns" nas frases importantes de um vídeo falado | Louise de Sadeleer · [louisedesadeleer/add-zooms](https://github.com/louisedesadeleer/add-zooms) | idem |
 | [`freecut`](freecut) | Edita o vídeo inteiro conversando: transcreve, corta, faz color grade, legenda e se autoavalia em cada corte. Sem nenhuma chave paga | Moh4696 (fork do video-use da Browser Use) · [Moh4696/freecut](https://github.com/Moh4696/freecut) | Mac, Windows, Linux |
+| [`threejs-skills`](threejs-skills) | 13 skills de three.js (o motor 3D que a animação 23 usa): geometria, luz, material, câmera, animação, shaders. Use junto com `skills/explicativo-3d` | CloudAI-X · [cloudai-x/threejs-skills](https://github.com/cloudai-x/threejs-skills) | Mac, Windows, Linux |
 | [`motion-graphics`](motion-graphics) | 6 skills: b-roll animado sincronizado com a fala, separar pessoa do fundo, explainers, efeitos sonoros no ritmo | Bart · [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) | Mac, Windows, Linux |
 
 ## Como instalar uma delas
 
 Copie a pasta pra pasta de skills do Claude (`C:\Users\SEU_USUARIO\.claude\skills\` no Windows,
 `~/.claude/skills/` no Mac) e reinicie o Claude. No `motion-graphics`, copie as pastas de dentro
-de `motion-graphics/skills/`.
+de `motion-graphics/skills/` (no `threejs-skills`, as de `threejs-skills/skills/`).
 
 Ou peça na aba Code, com este repositório aberto:
 
@@ -34,5 +35,6 @@ na primeira vez.
 | Edição completa com autocorreção | `extras/freecut` + animações do Pack |
 | Cortes pra reels a partir de vídeo longo | `extras/clipify` ou `skills/criativo-vertical` |
 | Mais energia em vídeo de cabeça falante | `extras/add-zooms` |
+| Animação 3D explicativa (órgão, peça, funil) | `skills/explicativo-3d` + `extras/threejs-skills` |
 
 > Versões copiadas em 20/10/2026. Pra pegar atualizações, use o link original de cada uma.

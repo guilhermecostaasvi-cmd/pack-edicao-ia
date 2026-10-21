@@ -1,6 +1,6 @@
 ---
 name: pack-edicao-ia
-description: Edita vídeo de YouTube, criativo (vertical) e VSL com HyperFrames usando o Pack de Edição IA — 22 animações prontas em pt-BR (prova de resultado, texto, transições, criativo) e 34 efeitos sonoros gerados por código. Use quando o usuário pedir pra editar um vídeo, colocar animações, motion, legenda, transição ou efeito sonoro num vídeo, ou montar criativo com o pack.
+description: Edita vídeo de YouTube, criativo (vertical) e VSL com HyperFrames usando o Pack de Edição IA — 23 animações prontas em pt-BR (uma em 3D) (prova de resultado, texto, transições, criativo) e 34 efeitos sonoros gerados por código. Use quando o usuário pedir pra editar um vídeo, colocar animações, motion, legenda, transição ou efeito sonoro num vídeo, ou montar criativo com o pack.
 ---
 
 # Pack de Edição IA
@@ -12,7 +12,7 @@ A pasta do pack tem esta estrutura (`PACK` = onde ela está):
 
 ```
 PACK/
-  compositions/   22 animações (.html), cada uma com variáveis
+  compositions/   23 animações (.html), cada uma com variáveis
   assets/sfx/     34 efeitos sonoros (.wav) + gerar_sons.py
   assets/brand.css  cores e fontes de TODAS as animações (mude aqui a identidade)
   assets/fonts/  assets/vendor/gsap.min.js
@@ -75,7 +75,7 @@ No fim de cada edição pergunte: "Quer que eu salve o que aprendi nessa ediçã
 
 ---
 
-## As 22 peças
+## As 23 peças
 
 **Prova de resultado** (é o que mais segura quem roda tráfego)
 
@@ -120,6 +120,7 @@ Ex.: corte em 20,00 s com cortina → `data-start="19.55"`.
 | `20-selo-oferta` | overlay | 4,5 s | preço de/por | `preco_de`, `preco_por`, `chamada`, `rodape` |
 | `21-antes-depois` | tela cheia | 5 s | comparação com divisória | `numero_antes/depois`, `imagem_antes/depois` |
 | `22-me-chama-na-dm` | overlay | 5 s | CTA de palavra-chave na DM | `arroba`, `palavra`, `chamada` |
+| `23-explicativo-3d` | tela cheia | 14 s | modelo 3D gira, é cortado e etiqueta as regiões (veja a skill `explicativo-3d`) | `modelo`, `regioes`, `titulo`, `eixo_corte` |
 
 ---
 
