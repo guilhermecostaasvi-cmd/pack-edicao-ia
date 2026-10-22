@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pack de Edição IA</title>
+<meta name="description" content="Repositório gratuito pra editar vídeo conversando com o Claude: 27 animações, 38 sons e skills prontas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: uma "timeline de edição" vertical — cada seção é uma faixa (V1, V2, A1...) com timecode na margem */
+  :root {
+    --bg: #0b0b0f;
+    --bg-2: #13131a;
+    --linha: #24242e;
+    --fg: #f4f2ec;
+    --fg-2: #a8a6b3;
+    --acento: #ffd23f;
+    --verde: #22c55e;
+    --sobre-acento: #0b0b0f;
+    --display: "Poppins", "Segoe UI", system-ui, sans-serif;
+    --corpo: "Poppins", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--corpo); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--acento); outline-offset: 3px; border-radius: 6px; }
+
+  /* topo */
+  .topo { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+  .marca { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2); display: flex; align-items: center; gap: 10px; }
+  .rec { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,.18); }
+  .topo a.link { font-size: 14px; font-weight: 600; text-decoration: none; color: var(--fg-2); }
+  .topo a.link:hover { color: var(--fg); }
+
+  /* hero */
+  .hero { padding-block: 28px 40px; display: grid; gap: 36px; }
+  .eyebrow { font-family: var(--mono); font-size: 13px; color: var(--acento); letter-spacing: .06em; text-transform: uppercase; }
+  h1 { font-family: var(--display); font-weight: 900; font-size: clamp(40px, 7.4vw, 92px); line-height: .98; letter-spacing: -0.035em; margin: 10px 0 0; text-wrap: balance; }
+  h1 .marca-texto { background: linear-gradient(transparent 58%, var(--acento) 58%, var(--acento) 92%, transparent 92%); color: var(--fg); padding: 0 .06em; }
+  .sub { font-size: clamp(17px, 2vw, 21px); color: var(--fg-2); max-width: 60ch; margin: 22px 0 0; text-wrap: pretty; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; padding: 15px 22px; border-radius: 12px; text-decoration: none; border: 2px solid transparent; transition: transform .15s ease, background .15s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.prim { background: var(--acento); color: var(--sobre-acento); }
+  .btn.sec { border-color: var(--linha); color: var(--fg); background: var(--bg-2); }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+  .gratis { font-family: var(--mono); font-size: 13px; color: var(--fg-2); margin-top: 14px; }
+  .gratis b { color: var(--verde); font-weight: 600; }
+
+  /* monitor + timeline */
+  .monitor { border: 1px solid var(--linha); border-radius: 16px; overflow: hidden; background: #000; }
+  .monitor video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+  .timeline { background: var(--bg-2); border-top: 1px solid var(--linha); padding: 12px 14px; display: grid; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--fg-2); }
+  .faixa { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 10px; }
+  .faixa .trilho { position: relative; height: 16px; border-radius: 4px; background: #0e0e13; overflow: hidden; }
+  .faixa .bloco { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; }
+  .v1 .bloco { background: #3b3b4a; }
+  .v2 .bloco { background: var(--acento); }
+  .a1 .bloco { background: var(--verde); opacity: .8; }
+  .cabeca { position: absolute; top: 0; bottom: 0; width: 2px; background: #ef4444; left: 0; animation: corre 33s linear infinite; }
+  @keyframes corre { to { left: 100%; } }
+  @media (prefers-reduced-motion: reduce) { .cabeca { animation: none; left: 38%; } }
+
+  /* números */
+  .numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--linha); margin-top: 8px; }
+  .num { padding: 26px 18px; border-left: 1px solid var(--linha); }
+  .num:first-child { border-left: 0; }
+  .num b { display: block; font-family: var(--display); font-size: clamp(34px, 5vw, 52px); font-weight: 900; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .num span { display: block; margin-top: 8px; font-size: 14px; color: var(--fg-2); }
+
+  /* seções */
+  section { padding-block: 72px 8px; }
+  .tc { font-family: var(--mono); font-size: 12px; color: var(--fg-2); letter-spacing: .06em; display: flex; align-items: center; gap: 10px; }
+  .tc::after { content: ""; flex: 1; height: 1px; background: var(--linha); }
+  h2 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 4.4vw, 50px); line-height: 1.05; letter-spacing: -0.03em; margin: 18px 0 0; text-wrap: balance; max-width: 22ch; }
+  .lead { color: var(--fg-2); max-width: 62ch; margin: 14px 0 0; }
+
+  /* galeria */
+  .galeria { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 34px; }
+  .card { min-width: 0; }
+  .card .tela { border-radius: 12px; overflow: hidden; border: 1px solid var(--linha); background: #000; }
+  .card video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+  .card h3 { font-size: 17px; font-weight: 700; margin: 12px 0 2px; }
+  .card p { font-size: 14px; color: var(--fg-2); margin: 0; line-height: 1.5; }
+  .card .arq { font-family: var(--mono); font-size: 11px; color: var(--acento); margin-top: 6px; display: block; }
+  .novo { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600; background: var(--verde); color: var(--sobre-acento); padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 2px; }
+
+  .lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; margin-top: 30px; padding: 0; list-style: none; }
+  .lista li { padding: 14px 0; border-bottom: 1px solid var(--linha); display: grid; grid-template-columns: 150px 1fr; gap: 16px; font-size: 15px; min-width: 0; }
+  .lista li b { font-family: var(--mono); font-size: 13px; color: var(--acento); font-weight: 600; }
+  .lista li span { color: var(--fg-2); }
+
+  /* passos */
+  .passos { display: grid; gap: 14px; margin-top: 34px; counter-reset: p; }
+  .passo { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 18px; padding: 22px; border: 1px solid var(--linha); border-radius: 14px; background: var(--bg-2); }
+  .passo .n { font-family: var(--display); font-weight: 900; font-size: 40px; line-height: 1; color: var(--acento); }
+  .passo h3 { margin: 2px 0 6px; font-size: 20px; }
+  .passo p { margin: 0; color: var(--fg-2); font-size: 15px; }
+  .prompt { position: relative; margin-top: 14px; background: #08080b; border: 1px solid var(--linha); border-radius: 10px; padding: 16px 16px 16px 16px; font-family: var(--mono); font-size: 13.5px; line-height: 1.65; color: #e9e6dc; white-space: pre-wrap; word-break: break-word; }
+  .copiar { margin-top: 10px; font-family: var(--corpo); font-weight: 700; font-size: 14px; background: var(--fg); color: var(--bg); border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer; }
+  .copiar.ok { background: var(--verde); }
+
+  .exemplos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 30px; }
+  .ex { border-left: 3px solid var(--acento); padding: 4px 0 4px 16px; font-size: 15px; color: var(--fg); min-width: 0; }
+  .ex small { display: block; font-family: var(--mono); font-size: 11px; color: var(--fg-2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .06em; }
+
+  .faq { margin-top: 26px; display: grid; gap: 0; }
+  details { border-bottom: 1px solid var(--linha); padding: 18px 0; }
+  summary { font-weight: 700; font-size: 18px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: var(--mono); color: var(--acento); font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details p { color: var(--fg-2); margin: 10px 0 0; max-width: 70ch; font-size: 15px; }
+
+  .final { margin-top: 80px; padding-block: 56px; border-top: 1px solid var(--linha); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+  .final h2 { margin: 0; }
+  .vertical { justify-self: center; width: min(240px, 70vw); border-radius: 22px; overflow: hidden; border: 6px solid #1c1c24; background: #000; }
+  .vertical video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; }
+  footer { padding-block: 26px 40px; border-top: 1px solid var(--linha); font-size: 13px; color: var(--fg-2); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  footer a { color: var(--fg); }
+  .creditos { font-size: 12px; max-width: 70ch; }
+
+  @media (max-width: 860px) {
+    .galeria, .exemplos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .num:nth-child(3) { border-left: 0; }
+    .num:nth-child(n+3) { border-top: 1px solid var(--linha); }
+    .lista { grid-template-columns: minmax(0, 1fr); }
+    .final { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .galeria, .exemplos { grid-template-columns: minmax(0, 1fr); }
+    .lista li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .passo { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .btn { width: 100%; justify-content: center; }
+    .timeline { display: none; }
+  }
+</style>
+<meta property="og:title" content="Pack de Edição IA">
+<meta property="og:description" content="Repositório gratuito pra editar vídeo conversando com o Claude: 27 animações, 38 sons e skills prontas.">
+<meta property="og:image" content="media/showreel.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0b0f'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ffd23f'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="topo">
+    <div class="marca"><span class="rec" aria-hidden="true"></span>Pack de Edição IA · v1.2</div>
+    <a class="link" href="https://github.com/guilhermecostaasvi-cmd/pack-edicao-ia" target="_blank" rel="noopener">GitHub →</a>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Repositório gratuito · Claude + HyperFrames</div>
+      <h1>Edite vídeo <span class="marca-texto">conversando</span> com o Claude.</h1>
+      <p class="sub">Animações, efeitos sonoros e skills prontas pra você pedir em português e receber o vídeo editado. Feito pra quem grava YouTube, criativo de anúncio e VSL, sem abrir editor.</p>
+      <div class="ctas">
+        <a class="btn prim" href="https://github.com/guilhermecostaasvi-cmd/pack-edicao-ia" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          Abrir o repositório
+        </a>
+        <a class="btn sec" href="https://github.com/guilhermecostaasvi-cmd/pack-edicao-ia/archive/refs/heads/main.zip" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+          Baixar o ZIP
+        </a>
+      </div>
+      <div class="gratis"><b>● R$ 0</b> · sem cadastro · licença aberta · funciona no Windows e no Mac</div>
+    </div>
+
+    <div class="monitor">
+      <video src="media/showreel.mp4" poster="media/showreel.jpg" autoplay muted loop playsinline aria-label="Showreel com as animações do pack"></video>
+      <div class="timeline" aria-hidden="true">
+        <div class="faixa v2"><span>V2</span><div class="trilho"><div class="bloco" style="left:2%;width:12%"></div><div class="bloco" style="left:18%;width:9%"></div><div class="bloco" style="left:31%;width:15%"></div><div class="bloco" style="left:52%;width:8%"></div><div class="bloco" style="left:64%;width:13%"></div><div class="bloco" style="left:82%;width:14%"></div><div class="cabeca"></div></div></div>
+        <div class="faixa v1"><span>V1</span><div class="trilho"><div class="bloco" style="left:0;width:100%"></div><div class="cabeca"></div></div></div>
+        <div class="faixa a1"><span>A1</span><div class="trilho"><div class="bloco" style="left:2%;width:2%"></div><div class="bloco" style="left:18%;width:3%"></div><div class="bloco" style="left:31%;width:2%"></div><div class="bloco" style="left:44%;width:4%"></div><div class="bloco" style="left:52%;width:2%"></div><div class="bloco" style="left:64%;width:3%"></div><div class="bloco" style="left:82%;width:2%"></div><div class="cabeca"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="numeros">
+    <div class="num"><b>27</b><span>animações editáveis em pt-BR e R$</span></div>
+    <div class="num"><b>38</b><span>efeitos sonoros livres pra anúncio</span></div>
+    <div class="num"><b>5</b><span>skills do pack pro Claude</span></div>
+    <div class="num"><b>6</b><span>pacotes extras de outros criadores</span></div>
+  </div>
+
+  <section id="animacoes">
+    <div class="tc">00:00:12:00 · V2 · ANIMAÇÕES</div>
+    <h2>Pede em português. O Claude coloca no vídeo.</h2>
+    <p class="lead">Cada animação aceita os seus textos, números e cores. Você fala "coloca a notificação de venda com R$ 497 quando eu falar da primeira venda" e ela entra no tempo certo, com som.</p>
+    <div class="galeria">
+      <div class="card"><div class="tela"><video src="media/contador.mp4" poster="media/contador.jpg" autoplay muted loop playsinline aria-label="Contador de faturamento"></video></div><h3>Contador de faturamento</h3><p>R$ subindo com notas voando. Pra print de resultado.</p><span class="arq">01-contador-faturamento</span></div>
+      <div class="card"><div class="tela"><video src="media/vidro.mp4" poster="media/vidro.jpg" autoplay muted loop playsinline aria-label="Notificação de vidro líquido"></video></div><h3>Vidro líquido <span class="novo">NOVO</span></h3><p>Notificação estilo iOS 26 que desfoca o vídeo de trás.</p><span class="arq">24-vidro-liquido</span></div>
+      <div class="card"><div class="tela"><video src="media/particulas.mp4" poster="media/particulas.jpg" autoplay muted loop playsinline aria-label="Texto em partículas"></video></div><h3>Partículas <span class="novo">NOVO</span></h3><p>Milhares de pontos de luz montam o seu número.</p><span class="arq">25-particulas</span></div>
+      <div class="card"><div class="tela"><video src="media/jornal.mp4" poster="media/jornal.jpg" autoplay muted loop playsinline aria-label="Manchete de jornal girando"></video></div><h3>Manchete de jornal <span class="novo">NOVO</span></h3><p>O jornal gira e para com a sua manchete. Prova social.</p><span class="arq">26-jornal</span></div>
+      <div class="card"><div class="tela"><video src="media/obturador.mp4" poster="media/obturador.jpg" autoplay muted loop playsinline aria-label="Transição obturador"></video></div><h3>Transição obturador <span class="novo">NOVO</span></h3><p>As lâminas da lente fecham, clique, flash, próxima cena.</p><span class="arq">27-transicao-obturador</span></div>
+      <div class="card"><div class="tela"><video src="media/coracao-3d.mp4" poster="media/coracao-3d.jpg" autoplay muted loop playsinline aria-label="Coração 3D cortado com regiões"></video></div><h3>Explicativo 3D <span class="novo">NOVO</span></h3><p>Modelo 3D real cortado no meio, com cada região etiquetada.</p><span class="arq">23-explicativo-3d</span></div>
+    </div>
+
+    <ul class="lista">
+      <li><b>Prova de resultado</b><span>contador de R$, notificação de venda, cascata de vendas, ROI, gráfico, zoom no print</span></li>
+      <li><b>Texto</b><span>lower third, inscreva-se, marca-texto, legenda karaokê, capítulo, frase de impacto, checklist</span></li>
+      <li><b>Transições</b><span>flash, cortina, glitch e obturador</span></li>
+      <li><b>Criativo 9:16</b><span>gancho no topo, barra de retenção, selo de oferta, antes × depois, "me chama na DM"</span></li>
+      <li><b>Sons</b><span>whoosh, impacto, riser, pop, cha-ching, notificação, glitch, obturador e mais, todos no mesmo volume</span></li>
+      <li><b>Skills</b><span>edição completa, decupagem, criativo vertical, identidade visual e explicativo 3D</span></li>
+    </ul>
+  </section>
+
+  <section id="instalar">
+    <div class="tc">00:01:04:00 · A1 · COMO USAR</div>
+    <h2>Três passos e você já está editando.</h2>
+    <div class="passos">
+      <div class="passo"><div class="n">1</div><div><h3>Baixe o repositório</h3><p>Clique em "Baixar o ZIP" e descompacte numa pasta, ou clone pelo GitHub. Você precisa do app do Claude com a aba Code (plano Pro ou maior).</p></div></div>
+      <div class="passo"><div class="n">2</div><div><h3>Cole este prompt na aba Code</h3><p>Abra a pasta do pack no Claude e cole. Ele confere o que falta, instala e faz um teste.</p>
+        <div class="prompt" id="prompt-instalar">Abre o docs/01-instalacao.md deste repositório e me ajuda a instalar tudo o que falta no meu computador (Node 22+, FFmpeg e o HyperFrames). Eu rodo os comandos do terminal se você não conseguir.
+Depois copia as pastas de skills/ pra minha pasta de skills do Claude.
+No fim, renderiza o compositions/02-notificacao-venda.html pra testar e me mostra o vídeo.</div>
+        <button class="copiar" type="button" data-alvo="prompt-instalar">Copiar prompt</button></div></div>
+      <div class="passo"><div class="n">3</div><div><h3>Peça a edição</h3><p>Mande o vídeo gravado e diga o que quer. Peça sempre o mapa de edição antes do render: é ali que você corrige.</p>
+        <div class="prompt" id="prompt-editar">Usando a skill pack-edicao-ia, decupa o meu-video.mp4 e me mostra o mapa de edição em tabela: tempo, o que eu falo, qual animação entra e qual som. Os números reais são: [seus números]. Não inventa nenhum número. Não renderiza ainda.</div>
+        <button class="copiar" type="button" data-alvo="prompt-editar">Copiar prompt</button></div></div>
+    </div>
+
+    <div class="exemplos">
+      <div class="ex"><small>YouTube</small>"Coloca o contador indo até R$ 25 mil quando eu falar do resultado da semana."</div>
+      <div class="ex"><small>Criativo</small>"Corta os 3 melhores trechos em 9:16 com gancho no topo e barra de progresso."</div>
+      <div class="ex"><small>Explicativo</small>"Faz o coração em 3D, corta no meio e mostra o ventrículo esquerdo."</div>
+    </div>
+  </section>
+
+  <section id="duvidas">
+    <div class="tc">00:02:30:00 · DÚVIDAS</div>
+    <h2>Perguntas que todo mundo faz</h2>
+    <div class="faq">
+      <details><summary>É de graça mesmo?</summary><p>O repositório é gratuito e aberto. O que você precisa ter é o app do Claude num plano com a aba Code (Pro ou maior). Node, FFmpeg e HyperFrames são gratuitos.</p></details>
+      <details><summary>Funciona no Windows?</summary><p>Funciona. O guia de instalação tem o passo a passo do Windows e as 3 travas mais comuns (e como passar por elas).</p></details>
+      <details><summary>Posso usar os sons e as animações em anúncio?</summary><p>Pode. Os sons são gerados por código, sem banco de som de terceiro. Só o coração 3D pede crédito na descrição: "Modelo 3D: BodyParts3D/DBCLS (CC BY-SA 2.1 JP) · Z-Anatomy (CC BY-SA 4.0)".</p></details>
+      <details><summary>Eu edito no CapCut ou no Premiere. Serve?</summary><p>Serve. Na pasta renders/ cada animação de sobrepor tem um .webm com fundo transparente. É só arrastar pra timeline.</p></details>
+      <details><summary>Preciso saber programar?</summary><p>Não. Você conversa com o Claude em português. Ele mexe nos arquivos e te mostra o resultado antes de renderizar.</p></details>
+    </div>
+  </section>
+
+  <div class="final">
+    <div>
+      <h2>Baixa, testa e me conta o que você editou.</h2>
+      <p class="lead">Se ficou bom, marca uma estrela no GitHub. Ajuda o projeto a chegar em mais gente.</p>
+      <div class="ctas">
+        <a class="btn prim" href="https://github.com/guilhermecostaasvi-cmd/pack-edicao-ia" target="_blank" rel="noopener">Abrir o repositório</a>
+        <a class="btn sec" href="https://www.youtube.com/@guilhermeasvi" target="_blank" rel="noopener">Ver o canal no YouTube</a>
+      </div>
+    </div>
+    <div class="vertical"><video src="media/reel-vertical.mp4" poster="media/reel-vertical.jpg" autoplay muted loop playsinline aria-label="Exemplo de criativo vertical"></video></div>
+  </div>
+
+  <footer>
+    <span>Feito por <a href="https://www.youtube.com/@guilhermeasvi" target="_blank" rel="noopener">Guilherme Asvi</a> · <a href="https://instagram.com/guilhermeasvi" target="_blank" rel="noopener">@guilhermeasvi</a></span>
+    <span class="creditos">Animações adaptadas do catálogo HyperFrames (Apache-2.0). Extras com o crédito de cada autor no repositório.</span>
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll(".copiar").forEach((b) => {
+    b.addEventListener("click", () => {
+      const el = document.getElementById(b.dataset.alvo);
+      const texto = el.textContent;
+      const ok = () => { b.textContent = "Copiado"; b.classList.add("ok"); setTimeout(() => { b.textContent = "Copiar prompt"; b.classList.remove("ok"); }, 1800); };
+      const seleciona = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Selecionado: Ctrl+C"; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(texto).then(ok, seleciona); else seleciona();
+    });
+  });
+</script>
+
+</body>
+</html>
