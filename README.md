@@ -27,6 +27,7 @@ gancho de criativo, selo de oferta.
 | — | [Problemas comuns](docs/04-problemas-comuns.md) | quando travar |
 | — | [Mais ferramentas](docs/05-mais-ferramentas.md) | pra ir além |
 | — | [Animações 3D explicativas](docs/06-animacoes-3d.md) | órgão, peça ou produto cortado no meio |
+| — | [Biblioteca de estilos: 10 prompts prontos](docs/07-biblioteca-estilos.md) | 3D, dados, mapa, desenho à mão, IA na tela |
 
 **Sem tempo pra instalar nada?** Baixe o repositório (botão verde **Code → Download ZIP**),
 abra a pasta `renders/` e arraste os `.webm` (fundo transparente) pro seu CapCut ou Premiere.
